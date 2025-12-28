@@ -6,6 +6,7 @@ import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { useToast } from '@/hooks/use-toast';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
+import { PageLoader, Loader } from '@/components/ui/loader';
 import { careerAPI } from '@/lib/api';
 import { Document, Page, pdfjs } from 'react-pdf';
 import 'react-pdf/dist/Page/AnnotationLayer.css';
@@ -125,11 +126,7 @@ export default function AdminCareers() {
   };
 
   if (loading) {
-    return (
-      <div className="min-h-screen bg-muted/50 flex items-center justify-center">
-        <div className="text-center">Loading applications...</div>
-      </div>
-    );
+    return <PageLoader />;
   }
 
   return (
@@ -387,10 +384,7 @@ export default function AdminCareers() {
                 </div>
                 <div className="border rounded-lg overflow-auto bg-muted/50 flex items-center justify-center min-h-[500px] max-h-[700px]">
                   {pdfLoading && (
-                    <div className="flex flex-col items-center gap-2 py-12">
-                      <Loader2 className="h-8 w-8 animate-spin text-primary" />
-                      <p className="text-sm text-muted-foreground">Loading PDF...</p>
-                    </div>
+                    <Loader size="lg" text="Loading PDF..." />
                   )}
                   {pdfError && (
                     <div className="flex flex-col items-center gap-2 py-12 px-4">
@@ -432,10 +426,7 @@ export default function AdminCareers() {
                         setPdfError(null);
                       }}
                       loading={
-                        <div className="flex flex-col items-center gap-2 py-12">
-                          <Loader2 className="h-8 w-8 animate-spin text-primary" />
-                          <p className="text-sm text-muted-foreground">Loading PDF...</p>
-                        </div>
+                        <Loader size="lg" text="Loading PDF..." />
                       }
                       className="flex justify-center"
                     >

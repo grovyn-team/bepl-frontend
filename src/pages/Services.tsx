@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Layout } from '@/components/layout/Layout';
 import { SectionHeading } from '@/components/ui/section-heading';
 import { ScrollReveal, StaggerContainer, StaggerItem } from '@/components/animations/ScrollAnimations';
+import { PageLoader } from '@/components/ui/loader';
 import { serviceAPI } from '@/lib/api';
 
 // Icon mapping
@@ -51,9 +52,7 @@ export default function Services() {
   if (loading) {
     return (
       <Layout>
-        <div className="min-h-screen flex items-center justify-center">
-          <div className="text-center">Loading services...</div>
-        </div>
+        <PageLoader />
       </Layout>
     );
   }

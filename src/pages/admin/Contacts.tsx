@@ -5,6 +5,7 @@ import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { AdminLayout } from '@/components/admin/AdminLayout';
+import { InlineLoader } from '@/components/ui/loader';
 import { contactAPI } from '@/lib/api';
 import { useToast } from '@/hooks/use-toast';
 
@@ -135,7 +136,7 @@ export default function AdminContacts() {
       </div>
 
       {loading ? (
-        <div className="text-center py-12">Loading...</div>
+        <InlineLoader />
       ) : contacts.length === 0 ? (
         <Card className="p-12 text-center">
           <p className="text-muted-foreground">No contacts found.</p>

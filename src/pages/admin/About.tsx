@@ -5,6 +5,7 @@ import { Card } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { AdminLayout } from '@/components/admin/AdminLayout';
+import { InlineLoader } from '@/components/ui/loader';
 import { aboutAPI } from '@/lib/api';
 import { useToast } from '@/hooks/use-toast';
 
@@ -115,7 +116,7 @@ export default function AdminAbout() {
   if (loading) {
     return (
       <AdminLayout title="Manage About">
-        <div className="text-center py-12">Loading...</div>
+        <InlineLoader />
       </AdminLayout>
     );
   }

@@ -5,6 +5,7 @@ import { Calendar, MapPin, Building2, ArrowLeft, ArrowRight } from 'lucide-react
 import { Button } from '@/components/ui/button';
 import { Layout } from '@/components/layout/Layout';
 import { ScrollReveal } from '@/components/animations/ScrollAnimations';
+import { PageLoader } from '@/components/ui/loader';
 import { projectAPI } from '@/lib/api';
 
 export default function ProjectDetails() {
@@ -65,9 +66,7 @@ export default function ProjectDetails() {
   if (loading) {
     return (
       <Layout>
-        <div className="min-h-screen flex items-center justify-center">
-          <div className="text-center">Loading project details...</div>
-        </div>
+        <PageLoader />
       </Layout>
     );
   }

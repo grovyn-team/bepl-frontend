@@ -6,6 +6,7 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { AdminLayout } from '@/components/admin/AdminLayout';
+import { InlineLoader } from '@/components/ui/loader';
 import { projectAPI } from '@/lib/api';
 import { useToast } from '@/hooks/use-toast';
 import {
@@ -164,7 +165,7 @@ export default function AdminProjects() {
       </div>
 
       {loading ? (
-        <div className="text-center py-12">Loading...</div>
+        <InlineLoader />
       ) : projects.length === 0 ? (
         <Card className="p-12 text-center">
           <p className="text-muted-foreground">No projects found. Create your first project!</p>

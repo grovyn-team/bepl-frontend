@@ -5,6 +5,7 @@ import { Card } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { AdminLayout } from '@/components/admin/AdminLayout';
+import { InlineLoader } from '@/components/ui/loader';
 import { serviceAPI } from '@/lib/api';
 import { useToast } from '@/hooks/use-toast';
 import {
@@ -160,7 +161,7 @@ export default function AdminServices() {
       </div>
 
       {loading ? (
-        <div className="text-center py-12">Loading...</div>
+        <InlineLoader />
       ) : services.length === 0 ? (
         <Card className="p-12 text-center">
           <p className="text-muted-foreground">No services found. Create your first service!</p>

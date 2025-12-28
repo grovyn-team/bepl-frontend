@@ -5,6 +5,7 @@ import { ArrowLeft, ArrowRight, CheckCircle2, Building2, Wrench, HardHat, Settin
 import { Button } from '@/components/ui/button';
 import { Layout } from '@/components/layout/Layout';
 import { ScrollReveal } from '@/components/animations/ScrollAnimations';
+import { PageLoader } from '@/components/ui/loader';
 import { serviceAPI } from '@/lib/api';
 
 // Icon mapping
@@ -75,9 +76,7 @@ export default function ServiceDetails() {
   if (loading) {
     return (
       <Layout>
-        <div className="min-h-screen flex items-center justify-center">
-          <div className="text-center">Loading service details...</div>
-        </div>
+        <PageLoader />
       </Layout>
     );
   }

@@ -5,6 +5,7 @@ import { Layout } from '@/components/layout/Layout';
 import { SectionHeading } from '@/components/ui/section-heading';
 import { AnimatedCounter } from '@/components/ui/animated-counter';
 import { ScrollReveal, StaggerContainer, StaggerItem } from '@/components/animations/ScrollAnimations';
+import { PageLoader } from '@/components/ui/loader';
 import { aboutAPI } from '@/lib/api';
 import aboutImage from '@/assets/about-industrial.jpg';
 import servicesPiping from '@/assets/services-piping.jpg';
@@ -42,9 +43,7 @@ export default function About() {
   if (loading) {
     return (
       <Layout>
-        <div className="min-h-screen flex items-center justify-center">
-          <div className="text-center">Loading...</div>
-        </div>
+        <PageLoader />
       </Layout>
     );
   }

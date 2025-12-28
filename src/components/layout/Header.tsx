@@ -68,7 +68,7 @@ export function Header() {
                 <div className="absolute -inset-1 bg-primary/20 rounded-lg blur-md opacity-0 group-hover:opacity-100 transition-opacity" />
               </div>
               <div className="hidden sm:block">
-                <p className="text-sm text-muted-foreground">Babu Erectors Pvt. Ltd.</p>
+                <p className="text-base text-muted-foreground">Babu Erectors Pvt. Ltd.</p>
               </div>
             </Link>
 
@@ -79,7 +79,7 @@ export function Header() {
                   key={link.href}
                   to={link.href}
                   className={cn(
-                    'px-4 py-2 rounded-lg text-base font-medium transition-colors relative group',
+                    'px-4 py-2 rounded-lg text-lg font-medium transition-colors relative group',
                     location.pathname === link.href
                       ? 'text-primary'
                       : 'text-muted-foreground hover:text-foreground'
@@ -181,7 +181,7 @@ export function Header() {
                     <Link
                       to={link.href}
                       className={cn(
-                        'block px-4 py-3 rounded-lg text-xl font-medium transition-colors',
+                        'block px-4 py-3 rounded-lg text-2xl font-medium transition-colors',
                         location.pathname === link.href
                           ? 'bg-primary/10 text-primary'
                           : 'text-foreground hover:bg-muted'
