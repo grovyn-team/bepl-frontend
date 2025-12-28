@@ -1,0 +1,236 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Space+Grotesk:wght@400;500;600;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+@layer base {
+  :root {
+    /* Industrial Premium Light Theme */
+    --background: 30 10% 98%;
+    --foreground: 220 20% 10%;
+
+    --card: 30 10% 96%;
+    --card-foreground: 220 20% 10%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 220 20% 10%;
+
+    /* Primary: Warm Amber/Orange - Construction accent */
+    --primary: 32 95% 44%;
+    --primary-foreground: 0 0% 100%;
+
+    /* Secondary: Steel Gray */
+    --secondary: 220 15% 92%;
+    --secondary-foreground: 220 20% 15%;
+
+    /* Muted: Soft gray for backgrounds */
+    --muted: 220 15% 95%;
+    --muted-foreground: 220 10% 45%;
+
+    /* Accent: Warm orange glow */
+    --accent: 28 100% 50%;
+    --accent-foreground: 0 0% 100%;
+
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 100%;
+
+    --border: 220 15% 88%;
+    --input: 220 15% 88%;
+    --ring: 32 95% 44%;
+
+    --radius: 0.5rem;
+
+    /* Custom tokens */
+    --steel: 220 15% 30%;
+    --steel-light: 220 10% 75%;
+    --construction-orange: 32 95% 44%;
+    --construction-amber: 38 92% 50%;
+    --industrial-dark: 220 25% 8%;
+    --surface-elevated: 0 0% 100%;
+
+    /* Gradients */
+    --gradient-hero: linear-gradient(135deg, hsl(220 25% 8%), hsl(220 20% 15%));
+    --gradient-accent: linear-gradient(135deg, hsl(32 95% 44%), hsl(38 92% 50%));
+    --gradient-steel: linear-gradient(180deg, hsl(220 15% 30%), hsl(220 20% 20%));
+
+    /* Shadows */
+    --shadow-sm: 0 1px 2px 0 hsl(220 25% 8% / 0.05);
+    --shadow-md: 0 4px 6px -1px hsl(220 25% 8% / 0.1), 0 2px 4px -2px hsl(220 25% 8% / 0.1);
+    --shadow-lg: 0 10px 15px -3px hsl(220 25% 8% / 0.1), 0 4px 6px -4px hsl(220 25% 8% / 0.1);
+    --shadow-glow: 0 0 40px hsl(32 95% 44% / 0.3);
+
+    /* Sidebar */
+    --sidebar-background: 30 10% 98%;
+    --sidebar-foreground: 220 20% 10%;
+    --sidebar-primary: 32 95% 44%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 220 15% 95%;
+    --sidebar-accent-foreground: 220 20% 10%;
+    --sidebar-border: 220 15% 88%;
+    --sidebar-ring: 32 95% 44%;
+  }
+
+  .dark {
+    /* Industrial Premium Dark Theme */
+    --background: 220 25% 6%;
+    --foreground: 30 15% 95%;
+
+    --card: 220 25% 10%;
+    --card-foreground: 30 15% 95%;
+
+    --popover: 220 25% 8%;
+    --popover-foreground: 30 15% 95%;
+
+    /* Primary: Warm Amber/Orange - glowing in dark */
+    --primary: 32 95% 50%;
+    --primary-foreground: 220 25% 6%;
+
+    /* Secondary: Dark Steel */
+    --secondary: 220 20% 15%;
+    --secondary-foreground: 30 15% 90%;
+
+    /* Muted: Deep charcoal */
+    --muted: 220 20% 12%;
+    --muted-foreground: 220 10% 55%;
+
+    /* Accent: Bright amber for highlights */
+    --accent: 38 100% 55%;
+    --accent-foreground: 220 25% 6%;
+
+    --destructive: 0 62% 30%;
+    --destructive-foreground: 0 0% 100%;
+
+    --border: 220 20% 18%;
+    --input: 220 20% 18%;
+    --ring: 32 95% 50%;
+
+    /* Custom tokens dark */
+    --steel: 220 15% 60%;
+    --steel-light: 220 10% 40%;
+    --construction-orange: 32 95% 55%;
+    --construction-amber: 38 92% 60%;
+    --industrial-dark: 220 25% 4%;
+    --surface-elevated: 220 25% 10%;
+
+    /* Gradients dark */
+    --gradient-hero: linear-gradient(135deg, hsl(220 25% 4%), hsl(220 20% 10%));
+    --gradient-accent: linear-gradient(135deg, hsl(32 95% 50%), hsl(38 92% 55%));
+    --gradient-steel: linear-gradient(180deg, hsl(220 15% 50%), hsl(220 20% 40%));
+
+    /* Shadows dark */
+    --shadow-sm: 0 1px 2px 0 hsl(0 0% 0% / 0.3);
+    --shadow-md: 0 4px 6px -1px hsl(0 0% 0% / 0.4), 0 2px 4px -2px hsl(0 0% 0% / 0.3);
+    --shadow-lg: 0 10px 15px -3px hsl(0 0% 0% / 0.4), 0 4px 6px -4px hsl(0 0% 0% / 0.3);
+    --shadow-glow: 0 0 60px hsl(32 95% 50% / 0.25);
+
+    /* Sidebar dark */
+    --sidebar-background: 220 25% 8%;
+    --sidebar-foreground: 30 15% 95%;
+    --sidebar-primary: 32 95% 50%;
+    --sidebar-primary-foreground: 220 25% 6%;
+    --sidebar-accent: 220 20% 15%;
+    --sidebar-accent-foreground: 30 15% 95%;
+    --sidebar-border: 220 20% 18%;
+    --sidebar-ring: 32 95% 50%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    @apply bg-background text-foreground font-sans antialiased;
+  }
+
+  /* Custom scrollbar */
+  ::-webkit-scrollbar {
+    width: 10px;
+  }
+
+  ::-webkit-scrollbar-track {
+    @apply bg-muted;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    @apply bg-muted-foreground/30 rounded-full;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    @apply bg-muted-foreground/50;
+  }
+}
+
+@layer components {
+  /* Text gradient utility */
+  .text-gradient {
+    @apply bg-clip-text text-transparent;
+    background-image: linear-gradient(135deg, hsl(var(--primary)), hsl(var(--accent)));
+  }
+
+  /* Glass morphism card */
+  .glass-card {
+    @apply bg-card/80 backdrop-blur-md border border-border/50;
+  }
+
+  /* Industrial section divider */
+  .section-divider {
+    @apply h-px w-full bg-gradient-to-r from-transparent via-border to-transparent;
+  }
+
+  /* Glow effect */
+  .glow {
+    box-shadow: var(--shadow-glow);
+  }
+
+  /* Construction grid pattern */
+  .construction-grid {
+    background-image: 
+      linear-gradient(hsl(var(--border)) 1px, transparent 1px),
+      linear-gradient(90deg, hsl(var(--border)) 1px, transparent 1px);
+    background-size: 50px 50px;
+  }
+
+  /* Hero overlay gradient */
+  .hero-overlay {
+    background: linear-gradient(
+      to bottom,
+      hsl(var(--background) / 0.3),
+      hsl(var(--background) / 0.7) 50%,
+      hsl(var(--background))
+    );
+  }
+
+  /* Animated underline for links */
+  .link-underline {
+    @apply relative;
+  }
+
+  .link-underline::after {
+    content: '';
+    @apply absolute bottom-0 left-0 w-0 h-0.5 bg-primary transition-all duration-300;
+  }
+
+  .link-underline:hover::after {
+    @apply w-full;
+  }
+}
+
+@layer utilities {
+  /* Text balance for headings */
+  .text-balance {
+    text-wrap: balance;
+  }
+
+  /* Animation delays */
+  .animation-delay-100 { animation-delay: 100ms; }
+  .animation-delay-200 { animation-delay: 200ms; }
+  .animation-delay-300 { animation-delay: 300ms; }
+  .animation-delay-400 { animation-delay: 400ms; }
+  .animation-delay-500 { animation-delay: 500ms; }
+}
