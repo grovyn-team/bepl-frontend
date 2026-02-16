@@ -1,7 +1,7 @@
 import { Suspense, lazy, useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { motion, useScroll, useTransform } from 'framer-motion';
-import { ArrowRight, Shield, Clock, Award, Users, Building2, Wrench, HardHat, ChevronRight } from 'lucide-react';
+import { motion, AnimatePresence, useScroll, useTransform } from 'framer-motion';
+import { ArrowRight, Shield, Clock, Award, Users, Building2, Wrench, HardHat, ChevronRight, ChevronLeft, Quote } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Layout } from '@/components/layout/Layout';
 import { SectionHeading } from '@/components/ui/section-heading';
@@ -37,6 +37,39 @@ const whyChooseUs = [
 
 const clients = ['AMNS', 'JSW', 'ESSAR', 'RELIANCE', 'NTPC', 'ONGC'];
 
+const testimonials = [
+  {
+    quote: 'BEPL delivered our CRM 2 expansion with precision and on schedule. Their expertise in structural steel erection and equipment installation is unmatched. A trusted partner for critical projects.',
+    client: 'AMNS India',
+    context: 'Cold Rolling Mill & PLTCM Projects',
+  },
+  {
+    quote: 'From Hot Strip Mill to Blast Furnace projects, BEPL has consistently met our quality and safety standards. Their team\'s technical capability and execution focus make them our preferred contractor.',
+    client: 'JSW Steel',
+    context: 'Steel Plant Construction',
+  },
+  {
+    quote: 'We have partnered with BEPL across power and steel projects. Their commitment to safety, on-time delivery, and engineering excellence has been instrumental in our plant operations.',
+    client: 'Essar Group',
+    context: 'Power & Steel',
+  },
+  {
+    quote: 'BEPL\'s execution on refinery and petrochemical projects has been exemplary. Their experience in structure, equipment, and piping installation gives us confidence in complex turnkey assignments.',
+    client: 'Reliance Industries',
+    context: 'Refinery & Petrochemical',
+  },
+  {
+    quote: 'A reliable partner for gas-based and thermal power installations. BEPL\'s disciplined approach and skilled workforce have supported our projects across multiple locations.',
+    client: 'NTPC',
+    context: 'Power Plant Projects',
+  },
+  {
+    quote: 'BEPL brings rigour and professionalism to every project. Their heavy engineering and fabrication capabilities align well with our requirements for large-scale industrial construction.',
+    client: 'ONGC',
+    context: 'Oil & Gas Infrastructure',
+  },
+];
+
 export default function Index() {
   const { scrollYProgress } = useScroll();
   const heroOpacity = useTransform(scrollYProgress, [0, 0.3], [1, 0]);
@@ -51,6 +84,7 @@ export default function Index() {
   ]);
   const [projects, setProjects] = useState<any[]>([]);
   const [aboutImageUrl, setAboutImageUrl] = useState<string | null>(null);
+  const [testimonialIndex, setTestimonialIndex] = useState(0);
 
   useEffect(() => {
     fetchData();
@@ -428,6 +462,89 @@ export default function Index() {
                 {client}
               </motion.div>
             ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Testimonials Section - Carousel */}
+      <section className="py-24 lg:py-32 bg-card border-t border-border">
+        <div className="container mx-auto px-4">
+          <SectionHeading
+            badge="Testimonials"
+            title="What Our Clients Say"
+            description="Hear from industry leaders who have partnered with BEPL for their most critical projects."
+          />
+
+          <div className="max-w-4xl mx-auto mt-16">
+            <div className="relative">
+              {/* Single card carousel */}
+              <motion.div
+                className="group relative rounded-2xl border border-border bg-background/50 p-8 lg:p-12 shadow-sm hover:shadow-md hover:border-primary/30 transition-all duration-300 min-h-[280px] flex flex-col"
+                whileHover={{ y: -2 }}
+              >
+                <div className="absolute top-8 right-8 opacity-10 group-hover:opacity-20 transition-opacity">
+                  <Quote className="h-14 w-14 text-primary" aria-hidden />
+                </div>
+
+                <AnimatePresence mode="wait">
+                  <motion.div
+                    key={testimonialIndex}
+                    initial={{ opacity: 0, x: 16 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    exit={{ opacity: 0, x: -16 }}
+                    transition={{ duration: 0.3 }}
+                    className="relative z-10 flex-1 flex flex-col"
+                  >
+                    <p className="text-muted-foreground text-lg leading-relaxed mb-8 flex-1">
+                      &ldquo;{testimonials[testimonialIndex].quote}&rdquo;
+                    </p>
+                    <div className="border-t border-border pt-6">
+                      <p className="font-display font-semibold text-foreground text-lg">{testimonials[testimonialIndex].client}</p>
+                      <p className="text-sm text-muted-foreground mt-1">{testimonials[testimonialIndex].context}</p>
+                    </div>
+                  </motion.div>
+                </AnimatePresence>
+              </motion.div>
+
+              {/* Prev / Next buttons */}
+              <div className="flex items-center justify-between mt-6">
+                <Button
+                  variant="outline"
+                  size="icon"
+                  className="rounded-full h-11 w-11 shrink-0"
+                  onClick={() => setTestimonialIndex((i) => (i === 0 ? testimonials.length - 1 : i - 1))}
+                  aria-label="Previous testimonial"
+                >
+                  <ChevronLeft className="h-5 w-5" />
+                </Button>
+
+                <div className="flex items-center gap-2">
+                  {testimonials.map((_, i) => (
+                    <button
+                      key={i}
+                      onClick={() => setTestimonialIndex(i)}
+                      className={`h-2 rounded-full transition-all duration-200 ${
+                        i === testimonialIndex
+                          ? 'w-8 bg-primary'
+                          : 'w-2 bg-muted-foreground/30 hover:bg-muted-foreground/50'
+                      }`}
+                      aria-label={`Go to testimonial ${i + 1}`}
+                      aria-current={i === testimonialIndex ? 'true' : undefined}
+                    />
+                  ))}
+                </div>
+
+                <Button
+                  variant="outline"
+                  size="icon"
+                  className="rounded-full h-11 w-11 shrink-0"
+                  onClick={() => setTestimonialIndex((i) => (i === testimonials.length - 1 ? 0 : i + 1))}
+                  aria-label="Next testimonial"
+                >
+                  <ChevronRight className="h-5 w-5" />
+                </Button>
+              </div>
+            </div>
           </div>
         </div>
       </section>

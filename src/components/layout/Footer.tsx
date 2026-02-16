@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { Phone, Mail, MapPin, ArrowUpRight, Linkedin, Facebook, Twitter } from 'lucide-react';
+import { Phone, Mail, MapPin, ArrowUpRight, Linkedin } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import logoImage from '@/assets/logo.png';
 
@@ -72,22 +72,13 @@ export function Footer() {
             </p>
             <div className="flex gap-3">
               <a 
-                href="#" 
+                href="https://www.linkedin.com/company/babuerectors/" 
+                target="_blank" 
+                rel="noopener noreferrer"
                 className="w-10 h-10 rounded-full bg-muted flex items-center justify-center text-muted-foreground hover:bg-primary hover:text-primary-foreground transition-colors"
+                aria-label="BEPL on LinkedIn"
               >
                 <Linkedin className="h-4 w-4" />
-              </a>
-              <a 
-                href="#" 
-                className="w-10 h-10 rounded-full bg-muted flex items-center justify-center text-muted-foreground hover:bg-primary hover:text-primary-foreground transition-colors"
-              >
-                <Facebook className="h-4 w-4" />
-              </a>
-              <a 
-                href="#" 
-                className="w-10 h-10 rounded-full bg-muted flex items-center justify-center text-muted-foreground hover:bg-primary hover:text-primary-foreground transition-colors"
-              >
-                <Twitter className="h-4 w-4" />
               </a>
             </div>
           </div>

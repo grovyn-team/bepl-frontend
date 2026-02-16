@@ -22,12 +22,12 @@ const contactInfo = [
   {
     icon: Phone,
     title: 'Phone',
-    details: ['+91 944 700 9417', '+91 990 943 6910', '0479-2409417'],
+    details: ['+91 944 700 9417'],
   },
   {
     icon: Mail,
     title: 'Email',
-    details: ['babuerectors@yahoo.com', 'babuerectorspvtltd@gmail.com'],
+    details: ['babuerectors@yahoo.com'],
   },
 ];
 
