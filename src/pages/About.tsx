@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
-import { motion } from 'framer-motion';
-import { Target, Eye, Users, Award, Shield, CheckCircle2 } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { Target, Eye, Users, Award, Shield, CheckCircle2, ChevronLeft, ChevronRight } from 'lucide-react';
 import { Layout } from '@/components/layout/Layout';
 import { SectionHeading } from '@/components/ui/section-heading';
 import { AnimatedCounter } from '@/components/ui/animated-counter';
@@ -19,9 +19,68 @@ const iconMap: Record<string, any> = {
   Award,
 };
 
+// Certifications & awards (from Essar Steel, EHESL, National Safety Day, etc.)
+const certificationCards = [
+  {
+    title: 'Contractor Safety Performance Award',
+    year: '2018',
+    achievement: 'Second Prize for Contractors Safety Performance Award',
+    recipient: 'M/s. Babu Erectors Pvt. Ltd.',
+    occasion: '1st Steel Safety Day & 48th National Safety Day',
+    date: '28th March 2019',
+    issuer: 'Essar Steel India Limited, Hazira',
+  },
+  {
+    title: 'Certificate of Appreciation',
+    year: '2018-19',
+    achievement: 'Winner amongst all contractors for Best HSE Conscious Contractor',
+    recipient: 'M/s Babu Erectors Pvt. Ltd.',
+    occasion: 'at EHESL Hazira',
+    date: '2018-2019',
+    issuer: 'EHESL Hazira',
+  },
+  {
+    title: 'Safety Rally Award',
+    year: '2014',
+    achievement: 'Winner Trophy for participation in Safety Rally',
+    recipient: 'M/s. Babu Enterprises',
+    occasion: '43rd National Safety Day Celebration',
+    date: '4th March 2014',
+    issuer: 'Essar Steel',
+  },
+  {
+    title: 'Contractor Safety Performance Award',
+    year: '2012',
+    achievement: 'Second Runners-up for Excellent Contractor Safety Performance',
+    recipient: 'M/s. Babu Enterprises',
+    occasion: '42nd National Safety Day Celebration',
+    date: '4th March 2013',
+    issuer: 'Essar Steel',
+  },
+  {
+    title: 'Certificate of Excellence',
+    year: '2012',
+    achievement: 'Runner-up Trophy for Group Fire Fighting Competition',
+    recipient: 'M/s. Babu Enterprise (CSP Mill)',
+    occasion: '68th National Fire Service Day',
+    date: '14th April 2012',
+    issuer: 'Essar Steel India Limited, Hazira',
+  },
+  {
+    title: 'Best Safety Rally Award',
+    year: '2012',
+    achievement: 'Second Prize for Best Safety Rally',
+    recipient: 'M/s. Babu Engineering',
+    occasion: '41st National Safety Day Celebration',
+    date: '5th March 2012',
+    issuer: 'Essar Steel',
+  },
+];
+
 export default function About() {
   const [aboutData, setAboutData] = useState<any>(null);
   const [loading, setLoading] = useState(true);
+  const [certIndex, setCertIndex] = useState(0);
 
   useEffect(() => {
     fetchAbout();
@@ -217,69 +276,117 @@ export default function About() {
         </div>
       </section>
 
-      {/* Values */}
-      <section className="py-24 bg-muted/50">
-        <div className="container mx-auto px-4">
+      {/* Certifications Carousel */}
+      {/*<section className="py-24 bg-muted/50 overflow-visible">
+        <div className="container mx-auto px-4 overflow-visible">
           <SectionHeading
-            badge="Our Values"
-            title="What Drives Us"
-            description="Core principles that guide every project we undertake."
+            badge="Our Achievements"
+            title="Certifications & Awards"
+            description="Industry recognition for safety, excellence, and consistent performance from leading clients."
           />
 
-          <StaggerContainer className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6 mt-16" staggerDelay={0.1}>
-            {values.map((value) => {
-              const IconComponent = value.icon && iconMap[value.icon] ? iconMap[value.icon] : Shield;
-              return (
-                <StaggerItem key={value.title}>
-                  <div className="bg-card border border-border rounded-2xl p-6 h-full hover:border-primary/50 transition-colors">
-                    <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center mb-4">
-                      <IconComponent className="h-6 w-6 text-primary" />
-                    </div>
-                    <h3 className="font-display font-semibold text-lg mb-2">{value.title}</h3>
-                    <p className="text-muted-foreground text-sm leading-relaxed">{value.description}</p>
-                  </div>
-                </StaggerItem>
-              );
-            })}
-          </StaggerContainer>
-        </div>
-      </section>
-
-      {/* Timeline */}
-      <section className="py-24">
-        <div className="container mx-auto px-4">
-          <SectionHeading
-            badge="Our Journey"
-            title="Milestones of Excellence"
-            description="Key moments in our four-decade journey of building India's industrial infrastructure."
-          />
-
-          <div className="max-w-3xl mx-auto mt-16">
-            <div className="relative">
-              <div className="absolute left-[22px] top-0 bottom-0 w-0.5 bg-border" />
-              {milestones.map((milestone, index) => (
-                <ScrollReveal key={milestone.year} delay={index * 0.1}>
-                  <div className="flex gap-6 mb-12 last:mb-0">
-                    <div className="relative">
-                      <div className="w-11 h-11 rounded-full bg-primary flex items-center justify-center text-primary-foreground font-bold text-sm z-10 relative">
-                        {milestone.year.slice(2)}
+          <div className="max-w-6xl mx-auto mt-16 px-4 sm:px-6">
+            {/* Single frame: 3 cards — center clear, left/right behind and blurry 
+            <div className="relative h-[380px] flex items-center justify-center overflow-visible">
+              {[-1, 0, 1].map((offset) => {
+                const idx = (certIndex + offset + certificationCards.length) % certificationCards.length;
+                const cert = certificationCards[idx];
+                const isCenter = offset === 0;
+                return (
+                  <motion.div
+                    key={`${idx}-${offset}`}
+                    initial={false}
+                    animate={{
+                      scale: isCenter ? 1 : 0.9,
+                      opacity: isCenter ? 1 : 0.5,
+                      filter: isCenter ? 'blur(0px)' : 'blur(6px)',
+                      x: offset * 220,
+                      zIndex: isCenter ? 20 : 10 - Math.abs(offset),
+                    }}
+                    transition={{
+                      type: 'tween',
+                      duration: 0.26,
+                      ease: [0.25, 0.1, 0.25, 1],
+                    }}
+                    style={{ willChange: isCenter ? 'auto' : 'transform' }}
+                    className="absolute inset-0 flex items-center justify-center"
+                  >
+                    <div
+                      className={`w-full max-w-md rounded-2xl border shadow-xl transition-all duration-300 ${
+                        isCenter
+                          ? 'border-primary/40 bg-card shadow-xl'
+                          : 'border-border bg-card/80 pointer-events-none'
+                      }`}
+                    >
+                      <div className="p-6 lg:p-8">
+                        <div className="flex items-center justify-between mb-4">
+                          <span className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/15 text-primary text-xs font-semibold uppercase tracking-wider">
+                            <Award className="h-3.5 w-3.5" />
+                            {cert.year}
+                          </span>
+                          {isCenter && (
+                            <Shield className="h-8 w-8 text-primary/60" aria-hidden />
+                          )}
+                        </div>
+                        <h3 className="font-display text-lg font-bold text-foreground mb-2 leading-tight">
+                          {cert.title}
+                        </h3>
+                        <p className="text-muted-foreground text-sm leading-relaxed mb-4">
+                          {cert.achievement}
+                        </p>
+                        <div className="border-t border-border pt-4 space-y-1">
+                          <p className="text-xs font-medium text-foreground">{cert.recipient}</p>
+                          <p className="text-xs text-muted-foreground">{cert.occasion} · {cert.date}</p>
+                          <p className="text-xs text-muted-foreground/80">{cert.issuer}</p>
+                        </div>
                       </div>
                     </div>
-                    <div className="flex-1 pt-1.5">
-                      <span className="text-primary font-medium text-sm">{milestone.year}</span>
-                      <h3 className="font-display font-semibold text-xl mt-1 mb-2">{milestone.title}</h3>
-                      <p className="text-muted-foreground">{milestone.description}</p>
-                    </div>
-                  </div>
-                </ScrollReveal>
-              ))}
+                  </motion.div>
+                );
+              })}
+            </div>
+
+            {/* Prev / Next and dots 
+            <div className="flex items-center justify-between mt-8 px-2">
+              <button
+                type="button"
+                onClick={() => setCertIndex((i) => (i === 0 ? certificationCards.length - 1 : i - 1))}
+                className="flex h-11 w-11 items-center justify-center rounded-full border border-border bg-card text-muted-foreground hover:bg-primary hover:text-primary-foreground hover:border-primary transition-colors"
+                aria-label="Previous certification"
+              >
+                <ChevronLeft className="h-5 w-5" />
+              </button>
+
+              <div className="flex items-center gap-2">
+                {certificationCards.map((_, i) => (
+                  <button
+                    key={i}
+                    type="button"
+                    onClick={() => setCertIndex(i)}
+                    className={`h-2 rounded-full transition-all duration-200 ${
+                      i === certIndex ? 'w-8 bg-primary' : 'w-2 bg-muted-foreground/30 hover:bg-muted-foreground/50'
+                    }`}
+                    aria-label={`Go to certification ${i + 1}`}
+                    aria-current={i === certIndex ? 'true' : undefined}
+                  />
+                ))}
+              </div>
+
+              <button
+                type="button"
+                onClick={() => setCertIndex((i) => (i === certificationCards.length - 1 ? 0 : i + 1))}
+                className="flex h-11 w-11 items-center justify-center rounded-full border border-border bg-card text-muted-foreground hover:bg-primary hover:text-primary-foreground hover:border-primary transition-colors"
+                aria-label="Next certification"
+              >
+                <ChevronRight className="h-5 w-5" />
+              </button>
             </div>
           </div>
         </div>
-      </section>
+      </section>*/}
 
       {/* Certifications */}
-      <section className="py-24 bg-muted/50">
+      {/* <section className="py-24 bg-muted/50">
         <div className="container mx-auto px-4">
           <div className="grid lg:grid-cols-2 gap-12 items-center">
             <ScrollReveal direction="left">
@@ -313,7 +420,7 @@ export default function About() {
             </ScrollReveal>
           </div>
         </div>
-      </section>
+      </section> */}
 
       {/* Team Stats */}
       <section className="py-24">

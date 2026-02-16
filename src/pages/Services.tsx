@@ -8,6 +8,12 @@ import { SectionHeading } from '@/components/ui/section-heading';
 import { ScrollReveal, StaggerContainer, StaggerItem } from '@/components/animations/ScrollAnimations';
 import { PageLoader } from '@/components/ui/loader';
 import { serviceAPI } from '@/lib/api';
+import servicesCrane from '@/assets/services-crane.jpg';
+import servicesPiping from '@/assets/services-piping.jpg';
+import projectsSteel from '@/assets/projects-steel.jpg';
+
+// Fallback images for services (used when API doesn't provide an image)
+const serviceImages = [servicesCrane, servicesPiping, projectsSteel];
 
 // Icon mapping
 const iconMap: Record<string, any> = {
@@ -61,7 +67,10 @@ export default function Services() {
     <Layout>
       {/* Hero Section */}
       <section className="relative pt-32 pb-20 overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-b from-muted/50 to-background" />
+        <div className="absolute inset-0">
+          <img src={servicesCrane} alt="" className="w-full h-full object-cover opacity-25" />
+          <div className="absolute inset-0 bg-gradient-to-b from-muted/80 via-muted/50 to-background" />
+        </div>
         <div className="container mx-auto px-4 relative">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -89,8 +98,8 @@ export default function Services() {
           <div className="space-y-32">
             {services.map((service, index) => (
               <div 
-                key={service.id}
-                id={service.id}
+                key={service._id || service.id}
+                id={service._id || service.id}
                 className="scroll-mt-32"
               >
                 <div className={`grid lg:grid-cols-2 gap-12 lg:gap-20 items-center ${
@@ -99,13 +108,11 @@ export default function Services() {
                   <ScrollReveal direction={index % 2 === 0 ? 'left' : 'right'}>
                     <div className={`order-2 ${index % 2 === 1 ? 'lg:order-1' : 'lg:order-2'}`}>
                       <div className="relative">
-                        {service.image && (
-                          <img 
-                            src={service.image} 
-                            alt={service.title}
-                            className="rounded-2xl shadow-2xl w-full aspect-[4/3] object-cover"
-                          />
-                        )}
+                        <img 
+                          src={service.image || serviceImages[index % serviceImages.length]} 
+                          alt={service.title}
+                          className="rounded-2xl shadow-2xl w-full aspect-[4/3] object-cover"
+                        />
                         {service.icon && iconMap[service.icon] && (() => {
                           const IconComponent = iconMap[service.icon] as React.ComponentType<{ className?: string }>;
                           return (
