@@ -11,6 +11,24 @@ import projectsSteel from '@/assets/projects-steel.jpg';
 import projectsPower from '@/assets/projects-power.jpg';
 import servicesCrane from '@/assets/services-crane.jpg';
 import servicesPiping from '@/assets/services-piping.jpg';
+import delhiMetroImage from '@/assets/Delhi Metro Railway.jpeg';
+import essarPowerImage from '@/assets/Essar Power Plant.jpeg';
+import ntpcGasImage from '@/assets/NTPC Gas Based Plant.jpeg';
+import relianceHmdImage from '@/assets/Reliance Industries - HMD.jpeg';
+import bridge from '@/assets/bridge.jpg';
+
+// Pool of project images for fallback and variety (includes new project-specific images)
+const projectImagePool = [
+  projectsSteel,
+  projectsPower,
+  servicesCrane,
+  servicesPiping,
+  delhiMetroImage,
+  essarPowerImage,
+  ntpcGasImage,
+  relianceHmdImage,
+  bridge,
+];
 
 const categories = ['All', 'Steel Plants', 'Power Plants', 'Refineries', 'Infrastructure'];
 
@@ -43,7 +61,7 @@ const projects = [
     location: 'Hazira',
     duration: '2011 - 2013',
     description: 'Boiler and Turbine Auxiliary equipment installation and maintenance.',
-    image: projectsPower,
+    image: essarPowerImage,
   },
   {
     id: 4,
@@ -63,7 +81,7 @@ const projects = [
     location: 'Hazira',
     duration: '2002 - 2007',
     description: 'Structure, Equipment, Piping and Gas Turbine installation.',
-    image: projectsSteel,
+    image: relianceHmdImage,
   },
   {
     id: 6,
@@ -83,7 +101,7 @@ const projects = [
     location: 'Various',
     duration: '1991 - 1999',
     description: 'Gas based boiler installation across multiple NTPC locations.',
-    image: projectsPower,
+    image: ntpcGasImage,
   },
   {
     id: 8,
@@ -93,7 +111,7 @@ const projects = [
     location: 'Delhi',
     duration: '2002 - 2003',
     description: 'Structural steel erection for Delhi Metro infrastructure.',
-    image: projectsSteel,
+    image: delhiMetroImage,
   },
   {
     id: 9,
@@ -103,7 +121,7 @@ const projects = [
     location: 'Hazira',
     duration: '2020 - 2022',
     description: "Fabrication of India's first cable-stayed railway bridge.",
-    image: servicesCrane,
+    image: bridge,
   },
 ];
 
@@ -149,13 +167,16 @@ export default function Projects() {
   return (
     <Layout>
       {/* Hero Section */}
-      <section className="relative pt-32 pb-20 overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-b from-muted/50 to-background" />
+      <section className="relative pt-32 pb-24 overflow-hidden">
+        <div className="absolute inset-0">
+          <img src={projectsSteel} alt="" className="w-full h-full object-cover opacity-30" />
+          <div className="absolute inset-0 bg-gradient-to-b from-muted/80 via-muted/50 to-background" />
+        </div>
         <div className="container mx-auto px-4 relative">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="max-w-3xl mx-auto text-center"
+            className="max-w-4xl mx-auto text-center"
           >
             <span className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-primary/10 text-primary text-sm font-medium mb-6">
               <span className="w-1.5 h-1.5 rounded-full bg-primary" />
@@ -164,10 +185,17 @@ export default function Projects() {
             <h1 className="font-display text-4xl md:text-5xl lg:text-6xl font-bold mb-6">
               Delivering <span className="text-gradient">Excellence</span> Across Industries
             </h1>
-            <p className="text-muted-foreground text-lg md:text-xl leading-relaxed">
+            {/* <p className="text-muted-foreground text-lg md:text-xl leading-relaxed mb-8">
               From steel mills to power plants, explore our portfolio of successfully 
               completed projects across India.
-            </p>
+            </p> */}
+            <br />
+            <p className="text-muted-foreground leading-relaxed">
+                We have executed projects across a diverse range of sectors-fertilizer plants, refineries, cement plants, steel plants, thermal power plants, gas-based boiler and turbine installations, and cross-country pipelines including Gas Monitoring Stations-delivering end-to-end engineering and construction excellence.
+              </p>
+              {/* <p className="text-muted-foreground leading-relaxed">
+                In steel plants, we have completed work across multiple units: Cold Rolling Mill (CRM), Hot Strip Mill (HSM), Slab Caster, Bar Mill, Wire Rod Mill, CSP Mill, Billet Caster, CRM Complex, CGL, PLTCM projects, COREX, Blast Furnace, Plate Mill, Coke Oven, Sinter Plant, Lime Plant, and Material Handling Systems.
+              </p> */}
           </motion.div>
         </div>
       </section>
@@ -215,7 +243,7 @@ export default function Projects() {
                 >
                   <div className="relative aspect-[16/10] overflow-hidden">
                     <img 
-                      src={project.image || projectsSteel} 
+                      src={project.image || projectImagePool[index % projectImagePool.length]} 
                       alt={project.title}
                       className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
                     />
@@ -243,15 +271,9 @@ export default function Projects() {
                       <p className="text-muted-foreground text-sm mb-4 line-clamp-2">
                         {project.description}
                       </p>
-                      <div className="flex items-center justify-between">
-                        <span className="flex items-center gap-1 text-sm text-muted-foreground">
-                          <Calendar className="h-4 w-4" />
-                          {project.duration}
-                        </span>
-                        <span className="text-primary text-sm font-medium flex items-center gap-1">
-                          View Details
-                          <ArrowRight className="h-4 w-4" />
-                        </span>
+                      <div className="flex items-center gap-1 text-sm text-muted-foreground">
+                        <Calendar className="h-4 w-4" />
+                        {project.duration}
                       </div>
                     </div>
                   </Link>

@@ -11,6 +11,7 @@ import { serviceAPI, projectAPI, aboutAPI } from '@/lib/api';
 import heroImage from '@/assets/hero-construction.jpg';
 import aboutImage from '@/assets/about-industrial.jpg';
 import projectsSteel from '@/assets/projects-steel.jpg';
+import projectsPower from '@/assets/projects-power.jpg';
 
 const SteelBeamScene = lazy(() => 
   import('@/components/3d/SteelBeamScene').then(m => ({ default: m.SteelBeamScene }))
@@ -43,8 +44,8 @@ export default function Index() {
   
   const [services, setServices] = useState<any[]>([]);
   const [stats, setStats] = useState([
-    { value: 40, suffix: '+', label: 'Years Experience' },
-    { value: 100, suffix: '+', label: 'Projects Completed' },
+    { value: 44, suffix: '+', label: 'Years Experience' },
+    { value: 29, suffix: '+', label: 'Projects Completed' },
     { value: 3000, suffix: '+', label: 'Skilled Workers' },
     { value: 103, suffix: '+', label: 'Engineers' },
   ]);
@@ -102,8 +103,8 @@ export default function Index() {
             alt="Industrial construction site at sunset" 
             className="w-full h-full object-cover"
           />
-          <div className="absolute inset-0 bg-gradient-to-b from-background/60 via-background/40 to-background" />
-          <div className="absolute inset-0 bg-gradient-to-r from-background/80 via-transparent to-transparent" />
+          <div className="absolute inset-0 bg-gradient-to-b from-background/40 via-background/20 to-background" />
+          <div className="absolute inset-0 bg-gradient-to-r from-background/55 via-transparent to-transparent" />
         </motion.div>
 
         {/* 3D Element */}
@@ -141,7 +142,7 @@ export default function Index() {
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.4 }}
-              className="text-lg md:text-xl text-muted-foreground mb-10 max-w-2xl leading-relaxed"
+              className="text-lg md:text-xl text-white/95 mb-10 max-w-2xl leading-relaxed"
             >
               Leading contractors in structural steel erection, equipment installation, 
               and heavy engineering services. Delivering excellence across India for over four decades.
@@ -223,7 +224,7 @@ export default function Index() {
                   className="rounded-2xl shadow-2xl w-full aspect-[4/3] object-cover"
                 />
                 <div className="absolute -bottom-6 -right-6 bg-primary text-primary-foreground p-6 rounded-xl shadow-xl">
-                  <div className="font-display text-4xl font-bold">40+</div>
+                  <div className="font-display text-4xl font-bold">44+</div>
                   <div className="text-sm opacity-90">Years of Excellence</div>
                 </div>
               </div>
@@ -349,10 +350,10 @@ export default function Index() {
                       <Building2 className="h-16 w-16 text-muted-foreground" />
                     </div>
                   )}
-                  <div className="absolute inset-0 bg-gradient-to-t from-industrial-dark via-transparent to-transparent" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent" />
                   <div className="absolute bottom-0 left-0 right-0 p-8">
-                    <h3 className="font-display text-2xl font-bold text-primary-foreground mb-2">{project.title}</h3>
-                    <p className="text-primary-foreground/80">{project.client} • {project.location}</p>
+                    <h3 className="font-display text-2xl font-bold text-white mb-2">{project.title}</h3>
+                    <p className="text-white/90">{project.client} • {project.location}</p>
                   </div>
                 </motion.div>
               </ParallaxSection>
@@ -369,10 +370,10 @@ export default function Index() {
                       alt="Steel structure project" 
                       className="w-full aspect-[16/10] object-cover transition-transform duration-500 group-hover:scale-110"
                     />
-                    <div className="absolute inset-0 bg-gradient-to-t from-industrial-dark via-transparent to-transparent" />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent" />
                     <div className="absolute bottom-0 left-0 right-0 p-8">
-                      <h3 className="font-display text-2xl font-bold text-primary-foreground mb-2">Steel Mill Projects</h3>
-                      <p className="text-primary-foreground/80">JSW, AMNS, ESSAR Steel</p>
+                      <h3 className="font-display text-2xl font-bold text-white mb-2">Steel Mill Projects</h3>
+                      <p className="text-white/90">JSW, AMNS, ESSAR Steel</p>
                     </div>
                   </motion.div>
                 </ParallaxSection>
@@ -381,13 +382,15 @@ export default function Index() {
                     whileHover={{ scale: 1.02 }}
                     className="relative rounded-2xl overflow-hidden group cursor-pointer"
                   >
-                    <div className="w-full aspect-[16/10] bg-muted flex items-center justify-center">
-                      <Building2 className="h-16 w-16 text-muted-foreground" />
-                    </div>
-                    <div className="absolute inset-0 bg-gradient-to-t from-industrial-dark via-transparent to-transparent" />
+                    <img 
+                      src={projectsPower} 
+                      alt="Power plant project" 
+                      className="w-full aspect-[16/10] object-cover transition-transform duration-500 group-hover:scale-110"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent" />
                     <div className="absolute bottom-0 left-0 right-0 p-8">
-                      <h3 className="font-display text-2xl font-bold text-primary-foreground mb-2">Power Plant Projects</h3>
-                      <p className="text-primary-foreground/80">NTPC, ESSAR Power, BHEL</p>
+                      <h3 className="font-display text-2xl font-bold text-white mb-2">Power Plant Projects</h3>
+                      <p className="text-white/90">NTPC, ESSAR Power, BHEL</p>
                     </div>
                   </motion.div>
                 </ParallaxSection>
