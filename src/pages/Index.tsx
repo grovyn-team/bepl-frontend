@@ -1,4 +1,4 @@
-import { Suspense, lazy, useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { motion, AnimatePresence, useScroll, useTransform } from 'framer-motion';
 import { ArrowRight, Shield, Clock, Award, Users, Building2, Wrench, HardHat, ChevronRight, ChevronLeft, Quote } from 'lucide-react';
@@ -8,14 +8,11 @@ import { SectionHeading } from '@/components/ui/section-heading';
 import { AnimatedCounter } from '@/components/ui/animated-counter';
 import { ScrollReveal, StaggerContainer, StaggerItem, ParallaxSection } from '@/components/animations/ScrollAnimations';
 import { serviceAPI, projectAPI, aboutAPI } from '@/lib/api';
-import heroImage from '@/assets/hero-construction.jpg';
+import heroImage from '@/assets/Hero.jpeg';
 import aboutImage from '@/assets/about-industrial.jpg';
 import projectsSteel from '@/assets/projects-steel.jpg';
 import projectsPower from '@/assets/projects-power.jpg';
-
-const SteelBeamScene = lazy(() => 
-  import('@/components/3d/SteelBeamScene').then(m => ({ default: m.SteelBeamScene }))
-);
+import logoImage from '@/assets/logo.png';
 
 // Icon mapping
 const iconMap: Record<string, any> = {
@@ -74,13 +71,13 @@ export default function Index() {
   const { scrollYProgress } = useScroll();
   const heroOpacity = useTransform(scrollYProgress, [0, 0.3], [1, 0]);
   const heroScale = useTransform(scrollYProgress, [0, 0.3], [1, 1.1]);
-  
+
   const [services, setServices] = useState<any[]>([]);
   const [stats, setStats] = useState([
-    { value: 44, suffix: '+', label: 'Years Experience' },
-    { value: 29, suffix: '+', label: 'Projects Completed' },
+    { value: 40, suffix: '+', label: 'Years Experience' },
+    { value: 100, suffix: '+', label: 'Projects Completed' },
     { value: 3000, suffix: '+', label: 'Skilled Workers' },
-    { value: 103, suffix: '+', label: 'Engineers' },
+    { value: 103, suffix: '+', label: 'Equipments' },
   ]);
   const [projects, setProjects] = useState<any[]>([]);
   const [aboutImageUrl, setAboutImageUrl] = useState<string | null>(null);
@@ -111,7 +108,7 @@ export default function Index() {
           { value: aboutData.teamStats.yearsExperience || 40, suffix: '+', label: 'Years Experience' },
           { value: projectCount || 100, suffix: '+', label: 'Projects Completed' },
           { value: aboutData.teamStats.technicians || 3000, suffix: '+', label: 'Skilled Workers' },
-          { value: aboutData.teamStats.engineers || 103, suffix: '+', label: 'Engineers' },
+          { value: aboutData.teamStats.equipments || 103, suffix: '+', label: 'Equipaments' },
         ]);
       }
       // Set about image if available
@@ -128,24 +125,28 @@ export default function Index() {
       {/* Hero Section */}
       <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
         {/* Background Image with Parallax */}
-        <motion.div 
+        <motion.div
           className="absolute inset-0 z-0"
           style={{ scale: heroScale }}
         >
-          <img 
-            src={heroImage} 
-            alt="Industrial construction site at sunset" 
+          <img
+            src={heroImage}
+            alt="Industrial construction site at sunset"
             className="w-full h-full object-cover"
           />
           <div className="absolute inset-0 bg-gradient-to-b from-background/40 via-background/20 to-background" />
           <div className="absolute inset-0 bg-gradient-to-r from-background/55 via-transparent to-transparent" />
         </motion.div>
 
-        {/* 3D Element */}
-        <div className="absolute right-0 top-1/2 -translate-y-1/2 w-1/3 h-[500px] hidden lg:block opacity-60">
-          <Suspense fallback={null}>
-            <SteelBeamScene />
-          </Suspense>
+        {/* Rotating Logo Element */}
+        <div className="absolute right-0 lg:right-10 top-1/2 -translate-y-1/2 w-2/5 h-[600px] hidden lg:flex items-center justify-center opacity-80 pointer-events-none" style={{ perspective: "1000px" }}>
+          <motion.img
+            src={logoImage}
+            alt="Rotating Logo"
+            className="w-full max-w-[550px] object-contain drop-shadow-2xl"
+            animate={{ rotateY: 360 }}
+            transition={{ duration: 8, repeat: Infinity, ease: "linear" }}
+          />
         </div>
 
         {/* Content */}
@@ -158,7 +159,7 @@ export default function Index() {
             >
               <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 border border-primary/20 text-primary text-sm font-medium mb-8">
                 <span className="w-2 h-2 rounded-full bg-primary animate-pulse" />
-                ISO Certified • Since 1982
+                ISO Certified Company
               </span>
             </motion.div>
 
@@ -169,7 +170,7 @@ export default function Index() {
               className="font-display text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold mb-6 leading-tight"
             >
               Your Trusted{' '}
-              <span className="text-gradient">Construction Partner</span>
+              <span className="text-gradient">Service Partner</span>
             </motion.h1>
 
             <motion.p
@@ -178,7 +179,7 @@ export default function Index() {
               transition={{ duration: 0.8, delay: 0.4 }}
               className="text-lg md:text-xl text-white/95 mb-10 max-w-2xl leading-relaxed"
             >
-              Leading contractors in structural steel erection, equipment installation, 
+              Leading contractors in structural steel erection, equipment installation,
               and heavy engineering services. Delivering excellence across India for over four decades.
             </motion.p>
 
@@ -252,9 +253,9 @@ export default function Index() {
           <div className="grid lg:grid-cols-2 gap-12 lg:gap-20 items-center">
             <ScrollReveal direction="left">
               <div className="relative">
-                <img 
-                  src={aboutImageUrl || aboutImage} 
-                  alt="Industrial warehouse interior" 
+                <img
+                  src={aboutImageUrl || aboutImage}
+                  alt="Industrial warehouse interior"
                   className="rounded-2xl shadow-2xl w-full aspect-[4/3] object-cover"
                 />
                 <div className="absolute -bottom-6 -right-6 bg-primary text-primary-foreground p-6 rounded-xl shadow-xl">
@@ -273,12 +274,12 @@ export default function Index() {
                 Building a Legacy of <span className="text-gradient">Excellence</span>
               </h2>
               <p className="text-muted-foreground text-lg leading-relaxed mb-6">
-                Babu Erectors Pvt. Ltd. was formed in 2013 as a sister concern of Babu Engineering Works, 
-                established in 1982. We are the leading contractors in fabrication and erection of structural works, 
+                Babu Erectors Pvt. Ltd. was formed in 2013 as a sister concern of Babu Engineering Works,
+                established in 1982. We are the leading contractors in fabrication and erection of structural works,
                 mechanical equipment installation, and piping systems.
               </p>
               <p className="text-muted-foreground leading-relaxed mb-8">
-                With headquarters in Surat, Gujarat, and operations across India, we've positioned ourselves 
+                With headquarters in Surat, Gujarat, and operations across India, we've positioned ourselves
                 as one of the leading engineering companies, committed to zero-accidents and on-time delivery.
               </p>
               <Link to="/about">
@@ -374,9 +375,9 @@ export default function Index() {
                   className="relative rounded-2xl overflow-hidden group cursor-pointer"
                 >
                   {project.image ? (
-                    <img 
-                      src={project.image} 
-                      alt={project.title} 
+                    <img
+                      src={project.image}
+                      alt={project.title}
                       className="w-full aspect-[16/10] object-cover transition-transform duration-500 group-hover:scale-110"
                     />
                   ) : (
@@ -399,9 +400,9 @@ export default function Index() {
                     whileHover={{ scale: 1.02 }}
                     className="relative rounded-2xl overflow-hidden group cursor-pointer"
                   >
-                    <img 
-                      src={projectsSteel} 
-                      alt="Steel structure project" 
+                    <img
+                      src={projectsSteel}
+                      alt="Steel structure project"
                       className="w-full aspect-[16/10] object-cover transition-transform duration-500 group-hover:scale-110"
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent" />
@@ -416,9 +417,9 @@ export default function Index() {
                     whileHover={{ scale: 1.02 }}
                     className="relative rounded-2xl overflow-hidden group cursor-pointer"
                   >
-                    <img 
-                      src={projectsPower} 
-                      alt="Power plant project" 
+                    <img
+                      src={projectsPower}
+                      alt="Power plant project"
                       className="w-full aspect-[16/10] object-cover transition-transform duration-500 group-hover:scale-110"
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent" />
@@ -523,11 +524,10 @@ export default function Index() {
                     <button
                       key={i}
                       onClick={() => setTestimonialIndex(i)}
-                      className={`h-2 rounded-full transition-all duration-200 ${
-                        i === testimonialIndex
-                          ? 'w-8 bg-primary'
-                          : 'w-2 bg-muted-foreground/30 hover:bg-muted-foreground/50'
-                      }`}
+                      className={`h-2 rounded-full transition-all duration-200 ${i === testimonialIndex
+                        ? 'w-8 bg-primary'
+                        : 'w-2 bg-muted-foreground/30 hover:bg-muted-foreground/50'
+                        }`}
                       aria-label={`Go to testimonial ${i + 1}`}
                       aria-current={i === testimonialIndex ? 'true' : undefined}
                     />
