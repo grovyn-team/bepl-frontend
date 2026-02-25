@@ -110,7 +110,7 @@ export default function About() {
   const milestones = aboutData?.milestones || [];
   const values = aboutData?.values || [];
   const certifications = aboutData?.certifications || [];
-  const teamStats = aboutData?.teamStats || { engineers: 103, supervisors: 209, technicians: 3000, yearsExperience: 40 };
+  const teamStats = aboutData?.teamStats || { engineers: 50, supervisors: 200, technicians: 3000, yearsExperience: 40 };
 
   return (
     <Layout>
@@ -143,9 +143,9 @@ export default function About() {
           <div className="grid lg:grid-cols-2 gap-12 lg:gap-20 items-center">
             <ScrollReveal direction="left">
               <div className="relative">
-                <img 
-                  src={aboutData?.aboutImage || aboutImage} 
-                  alt="Industrial facility" 
+                <img
+                  src={aboutData?.aboutImage || aboutImage}
+                  alt="Industrial facility"
                   className="rounded-2xl shadow-2xl w-full aspect-[4/3] object-cover"
                 />
                 <div className="absolute -bottom-6 -left-6 bg-card border border-border p-6 rounded-xl shadow-xl">
@@ -172,19 +172,19 @@ export default function About() {
                 ) : (
                   <>
                     <p>
-                      The company M/s BABU ERECTORS PVT.LTD was formed in the year 2013, as a sister concern 
-                      of BABU ENGINEERING WORKS, established in 1982. We are the leading contractors in the area 
-                      of Fabrication and Erection of Structural works, Erection and Alignment of Mechanical Equipments, 
+                      The company M/s BABU ERECTORS PVT.LTD was formed in the year 2013, as a sister concern
+                      of BABU ENGINEERING WORKS, established in 1982. We are the leading contractors in the area
+                      of Fabrication and Erection of Structural works, Erection and Alignment of Mechanical Equipments,
                       and Fabrication and Erection of Piping works.
                     </p>
                     <p>
-                      With the Head Office situated in Surat (Gujarat), Babu Erectors operates across India with 
-                      the highest ethical and professional standards. Our vision encompasses the tradition of 
+                      With the Head Office situated in Surat (Gujarat), Babu Erectors operates across India with
+                      the highest ethical and professional standards. Our vision encompasses the tradition of
                       delivering quality by adopting best construction practices in the industry.
                     </p>
                     <p>
-                      We specialize in mechanical and structural works, including fabrication and erection of 
-                      Structural, Piping & Equipment for commercial and industrial clients. With over 40 years 
+                      We specialize in mechanical and structural works, including fabrication and erection of
+                      Structural, Piping & Equipment for commercial and industrial clients. With over 40 years
                       in the business, we've earned tremendous appreciation from our clients.
                     </p>
                   </>
@@ -217,24 +217,24 @@ export default function About() {
                         <div dangerouslySetInnerHTML={{ __html: aboutData.mdMessage.message.replace(/\n/g, '<br />') }} />
                       ) : (
                         <>
-                          "It is my pleasure to communicate with you the 40 Years of business of BABU ERECTORS PVT LTD. 
-                          Since founded in 1982, we have achieved new levels of growth through implementing a wide range 
+                          "It is my pleasure to communicate with you the 40 Years of business of BABU ERECTORS PVT LTD.
+                          Since founded in 1982, we have achieved new levels of growth through implementing a wide range
                           of projects and positioned ourselves as one of the leading Engineering Companies in India.
                           <br /><br />
-                          Being an engineering company, we have never compromised on the quality of safety work. We have 
-                          always ensured safety as a fundamental requirement for the continuation of our business operations. 
+                          Being an engineering company, we have never compromised on the quality of safety work. We have
+                          always ensured safety as a fundamental requirement for the continuation of our business operations.
                           Our 'Zero-accidental' policy has always set a benchmark for our goals.
                           <br /><br />
-                          We consider the people at BEPL as one team and treat each other with equal respect. Together we 
+                          We consider the people at BEPL as one team and treat each other with equal respect. Together we
                           will achieve our goals."
                         </>
                       )}
                     </blockquote>
                   </div>
                   <div className="flex items-center justify-center">
-                    <img 
-                      src={founderImage} 
-                      alt={aboutData?.mdMessage?.name || 'K. Samuel'} 
+                    <img
+                      src={founderImage}
+                      alt={aboutData?.mdMessage?.name || 'K. Samuel'}
                       className="rounded-2xl shadow-xl w-full max-w-md aspect-[3/4] object-cover"
                     />
                   </div>
@@ -433,8 +433,8 @@ export default function About() {
 
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8 mt-16">
             {[
-              { value: teamStats.engineers, suffix: '+', label: 'Engineers' },
-              { value: teamStats.supervisors, suffix: '+', label: 'Technical Supervisors' },
+              { value: teamStats.engineers || 50, suffix: '+', label: 'Engineers' },
+              { value: teamStats.supervisors || 200, suffix: '+', label: 'Technical Supervisors' },
               { value: teamStats.technicians, suffix: '+', label: 'Skilled Technicians' },
               { value: teamStats.yearsExperience, suffix: '+', label: 'Years Experience' },
             ].map((stat, index) => (
