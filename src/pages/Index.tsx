@@ -134,8 +134,8 @@ export default function Index() {
             alt="Industrial construction site at sunset"
             className="w-full h-full object-cover"
           />
-          <div className="absolute inset-0 bg-gradient-to-b from-background/40 via-background/20 to-background" />
-          <div className="absolute inset-0 bg-gradient-to-r from-background/55 via-transparent to-transparent" />
+          <div className="absolute inset-0 bg-gradient-to-b from-background/25 via-background/10 to-background/40" />
+          <div className="absolute inset-0 bg-gradient-to-r from-background/35 via-transparent to-transparent" />
         </motion.div>
 
         {/* Rotating Logo Element */}
@@ -177,7 +177,7 @@ export default function Index() {
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.4 }}
-              className="text-lg md:text-xl text-white/95 mb-10 max-w-2xl leading-relaxed"
+              className="text-lg md:text-xl text-white/95 font-bold mb-10 max-w-2xl leading-relaxed"
             >
               Leading contractors in structural steel erection, equipment installation,
               and heavy engineering services. Delivering excellence across India for over four decades.
