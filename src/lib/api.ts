@@ -60,20 +60,12 @@ export const contactAPI = {
   delete: (id: string) => apiRequest(`/contact/${id}`, { method: 'DELETE' }),
 };
 
-// Service API
+// Service API - create/update support FormData for image upload
 export const serviceAPI = {
   getAll: () => apiRequest('/services'),
   getOne: (id: string) => apiRequest(`/services/${id}`),
-  create: (data: any) =>
-    apiRequest('/services', {
-      method: 'POST',
-      body: JSON.stringify(data),
-    }),
-  update: (id: string, data: any) =>
-    apiRequest(`/services/${id}`, {
-      method: 'PUT',
-      body: JSON.stringify(data),
-    }),
+  create: (formData: FormData) => projectFormRequest('/services', formData, 'POST'),
+  update: (id: string, formData: FormData) => projectFormRequest(`/services/${id}`, formData, 'PUT'),
   delete: (id: string) => apiRequest(`/services/${id}`, { method: 'DELETE' }),
 };
 
