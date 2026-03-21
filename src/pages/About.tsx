@@ -110,7 +110,7 @@ export default function About() {
   const milestones = aboutData?.milestones || [];
   const values = aboutData?.values || [];
   const certifications = aboutData?.certifications || [];
-  const teamStats = aboutData?.teamStats || { engineers: 50, supervisors: 200, technicians: 3000, yearsExperience: 40 };
+  const teamStats = aboutData?.teamStats || { engineers: 103, supervisors: 209, technicians: 3000, yearsExperience: 44 };
 
   return (
     <Layout>
@@ -131,7 +131,7 @@ export default function About() {
               {aboutData?.heroTitle || "Building a Legacy of"} <span className="text-gradient">{aboutData?.heroTitle ? "" : "Excellence"}</span>
             </h1>
             <p className="text-muted-foreground text-lg md:text-xl leading-relaxed">
-              {aboutData?.heroDescription || "For over 40 years, BEPL has been at the forefront of industrial construction, delivering precision engineering and unwavering commitment to safety."}
+              {aboutData?.heroDescription || "For over 44 years, BEPL has been at the forefront of industrial construction, delivering precision engineering and unwavering commitment to safety."}
             </p>
           </motion.div>
         </div>
@@ -183,8 +183,8 @@ export default function About() {
                       delivering quality by adopting best construction practices in the industry.
                     </p>
                     <p>
-                      We specialize in mechanical and structural works, including fabrication and erection of
-                      Structural, Piping & Equipment for commercial and industrial clients. With over 40 years
+                      We specialize in mechanical and structural works, including fabrication and erection of 
+                      Structural, Piping & Equipment for commercial and industrial clients. With over 44 years 
                       in the business, we've earned tremendous appreciation from our clients.
                     </p>
                   </>
@@ -205,7 +205,14 @@ export default function About() {
                   <div>
                     <div className="flex items-center gap-4 mb-8">
                       <div className="w-16 h-16 bg-primary rounded-full flex items-center justify-center">
-                        <span className="font-display font-bold text-primary-foreground text-2xl">KS</span>
+                        <span className="font-display font-bold text-primary-foreground text-2xl">
+                          {(aboutData?.mdMessage?.name || 'K. Samuel')
+                            .split(/\s+/)
+                            .map((w) => w[0])
+                            .join('')
+                            .toUpperCase()
+                            .slice(0, 2) || 'KS'}
+                        </span>
                       </div>
                       <div>
                         <h3 className="font-display font-semibold text-xl">{aboutData?.mdMessage?.name || 'K. Samuel'}</h3>
@@ -217,8 +224,8 @@ export default function About() {
                         <div dangerouslySetInnerHTML={{ __html: aboutData.mdMessage.message.replace(/\n/g, '<br />') }} />
                       ) : (
                         <>
-                          "It is my pleasure to communicate with you the 40 Years of business of BABU ERECTORS PVT LTD.
-                          Since founded in 1982, we have achieved new levels of growth through implementing a wide range
+                          "It is my pleasure to communicate with you the 44 Years of business of BABU ERECTORS PVT LTD. 
+                          Since founded in 1982, we have achieved new levels of growth through implementing a wide range 
                           of projects and positioned ourselves as one of the leading Engineering Companies in India.
                           <br /><br />
                           Being an engineering company, we have never compromised on the quality of safety work. We have
@@ -232,9 +239,9 @@ export default function About() {
                     </blockquote>
                   </div>
                   <div className="flex items-center justify-center">
-                    <img
-                      src={founderImage}
-                      alt={aboutData?.mdMessage?.name || 'K. Samuel'}
+                    <img 
+                      src={aboutData?.mdMessage?.image || founderImage} 
+                      alt={aboutData?.mdMessage?.name || 'K. Samuel'} 
                       className="rounded-2xl shadow-xl w-full max-w-md aspect-[3/4] object-cover"
                     />
                   </div>

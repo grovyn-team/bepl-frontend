@@ -1,12 +1,12 @@
-import { useState, useEffect } from 'react';
-import { Save, Plus, Trash2 } from 'lucide-react';
+import { useState, useEffect, useRef } from 'react';
+import { Save, Plus, Trash2, Upload, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { AdminLayout } from '@/components/admin/AdminLayout';
 import { InlineLoader } from '@/components/ui/loader';
-import { aboutAPI } from '@/lib/api';
+import { aboutAPI, uploadAPI } from '@/lib/api';
 import { useToast } from '@/hooks/use-toast';
 
 interface AboutData {
@@ -28,6 +28,7 @@ interface AboutData {
     name: string;
     position: string;
     message: string;
+    image?: string;
   };
 }
 
@@ -35,6 +36,8 @@ export default function AdminAbout() {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [formData, setFormData] = useState<AboutData>({});
+  const [mdImageUploading, setMdImageUploading] = useState(false);
+  const mdImageInputRef = useRef<HTMLInputElement>(null);
   const { toast } = useToast();
 
   useEffect(() => {
@@ -113,6 +116,48 @@ export default function AdminAbout() {
     setFormData({ ...formData, certifications: newCerts });
   };
 
+  const handleMdImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file || !file.type.startsWith('image/')) {
+      toast({ title: 'Invalid file', description: 'Please select an image file', variant: 'destructive' });
+      return;
+    }
+    try {
+      setMdImageUploading(true);
+      const res = await uploadAPI.image(file, 'about');
+      setFormData({
+        ...formData,
+        mdMessage: {
+          ...formData.mdMessage,
+          name: formData.mdMessage?.name || '',
+          position: formData.mdMessage?.position || '',
+          message: formData.mdMessage?.message || '',
+          image: res.data.url,
+        },
+      });
+      toast({ title: 'Success', description: 'Image uploaded successfully' });
+    } catch (err: any) {
+      toast({ title: 'Error', description: err.message || 'Failed to upload image', variant: 'destructive' });
+    } finally {
+      setMdImageUploading(false);
+      mdImageInputRef.current && (mdImageInputRef.current.value = '');
+    }
+  };
+
+  const clearMdImage = () => {
+    setFormData({
+      ...formData,
+      mdMessage: {
+        ...formData.mdMessage,
+        name: formData.mdMessage?.name || '',
+        position: formData.mdMessage?.position || '',
+        message: formData.mdMessage?.message || '',
+        image: undefined,
+      },
+    });
+    mdImageInputRef.current && (mdImageInputRef.current.value = '');
+  };
+
   if (loading) {
     return (
       <AdminLayout title="Manage About">
@@ -157,6 +202,88 @@ export default function AdminAbout() {
             placeholder="About content"
             rows={6}
           />
+        </Card>
+
+        {/* Message from MD */}
+        <Card className="p-6">
+          <h3 className="font-semibold text-lg mb-4">Message from Managing Director</h3>
+          <div className="space-y-4">
+            <div className="grid md:grid-cols-2 gap-4">
+              <div>
+                <label className="block text-sm font-medium mb-2">Name</label>
+                <Input
+                  value={formData.mdMessage?.name || ''}
+                  onChange={(e) =>
+                    setFormData({
+                      ...formData,
+                      mdMessage: { ...formData.mdMessage, name: e.target.value },
+                    })
+                  }
+                  placeholder="e.g., K. Samuel"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium mb-2">Position</label>
+                <Input
+                  value={formData.mdMessage?.position || ''}
+                  onChange={(e) =>
+                    setFormData({
+                      ...formData,
+                      mdMessage: { ...formData.mdMessage, position: e.target.value },
+                    })
+                  }
+                  placeholder="e.g., Managing Director"
+                />
+              </div>
+            </div>
+            <div>
+              <label className="block text-sm font-medium mb-2">Message</label>
+              <Textarea
+                value={formData.mdMessage?.message || ''}
+                onChange={(e) =>
+                  setFormData({
+                    ...formData,
+                    mdMessage: { ...formData.mdMessage, message: e.target.value },
+                  })
+                }
+                placeholder="Message from the MD"
+                rows={6}
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium mb-2">Profile Image</label>
+              <div className="flex items-center gap-3">
+                <input
+                  ref={mdImageInputRef}
+                  type="file"
+                  accept="image/*"
+                  onChange={handleMdImageChange}
+                  className="hidden"
+                />
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={() => mdImageInputRef.current?.click()}
+                  disabled={mdImageUploading}
+                  className="gap-2"
+                >
+                  <Upload className="h-4 w-4" />
+                  {mdImageUploading ? 'Uploading...' : 'Upload Image'}
+                </Button>
+                {formData.mdMessage?.image && (
+                  <Button type="button" variant="ghost" size="sm" onClick={clearMdImage} className="text-muted-foreground">
+                    <X className="h-4 w-4 mr-1" />
+                    Remove
+                  </Button>
+                )}
+                {formData.mdMessage?.image && (
+                  <div className="w-16 h-16 rounded-lg overflow-hidden border flex-shrink-0">
+                    <img src={formData.mdMessage.image} alt="MD" className="object-cover w-full h-full" />
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
         </Card>
 
         {/* Vision & Mission */}

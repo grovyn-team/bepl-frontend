@@ -1,5 +1,5 @@
-import { useState, useEffect } from 'react';
-import { Plus, Edit, Trash2 } from 'lucide-react';
+import { useState, useEffect, useRef } from 'react';
+import { Plus, Edit, Trash2, Upload, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -45,6 +45,9 @@ export default function AdminProjects() {
     order: 0,
     isActive: true,
   });
+  const [imageFile, setImageFile] = useState<File | null>(null);
+  const [imagePreview, setImagePreview] = useState<string | null>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
   const { toast } = useToast();
 
   useEffect(() => {
@@ -68,6 +71,7 @@ export default function AdminProjects() {
   };
 
   const handleOpenDialog = (project?: Project) => {
+    setImageFile(null);
     if (project) {
       setEditingProject(project);
       setFormData({
@@ -81,6 +85,7 @@ export default function AdminProjects() {
         order: project.order,
         isActive: project.isActive,
       });
+      setImagePreview(project.image || null);
     } else {
       setEditingProject(null);
       setFormData({
@@ -94,31 +99,75 @@ export default function AdminProjects() {
         order: 0,
         isActive: true,
       });
+      setImagePreview(null);
     }
     setIsDialogOpen(true);
   };
 
   const handleCloseDialog = () => {
+    setImagePreview((prev) => {
+      if (prev?.startsWith('blob:')) URL.revokeObjectURL(prev);
+      return null;
+    });
     setIsDialogOpen(false);
     setEditingProject(null);
+    setImageFile(null);
+    fileInputRef.current && (fileInputRef.current.value = '');
+  };
+
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      if (!file.type.startsWith('image/')) {
+        toast({ title: 'Invalid file', description: 'Please select an image file', variant: 'destructive' });
+        return;
+      }
+      setImagePreview((prev) => {
+        if (prev && prev.startsWith('blob:')) URL.revokeObjectURL(prev);
+        return URL.createObjectURL(file);
+      });
+      setImageFile(file);
+      setFormData((prev) => ({ ...prev, image: '' })); // Clear URL when uploading file
+    }
+  };
+
+  const clearImage = () => {
+    setImagePreview((prev) => {
+      if (prev && prev.startsWith('blob:')) URL.revokeObjectURL(prev);
+      return null;
+    });
+    setImageFile(null);
+    setFormData((prev) => ({ ...prev, image: '' }));
+    fileInputRef.current && (fileInputRef.current.value = '');
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      const data = {
-        ...formData,
-        order: Number(formData.order),
-      };
+      const formDataToSend = new FormData();
+      formDataToSend.append('title', formData.title);
+      formDataToSend.append('client', formData.client);
+      formDataToSend.append('category', formData.category);
+      formDataToSend.append('location', formData.location);
+      formDataToSend.append('duration', formData.duration);
+      formDataToSend.append('description', formData.description);
+      formDataToSend.append('order', String(formData.order));
+      formDataToSend.append('isActive', String(formData.isActive));
+
+      if (imageFile) {
+        formDataToSend.append('image', imageFile);
+      } else {
+        formDataToSend.append('image', formData.image);
+      }
 
       if (editingProject) {
-        await projectAPI.update(editingProject._id, data);
+        await projectAPI.update(editingProject._id, formDataToSend);
         toast({
           title: 'Success',
           description: 'Project updated successfully',
         });
       } else {
-        await projectAPI.create(data);
+        await projectAPI.create(formDataToSend);
         toast({
           title: 'Success',
           description: 'Project created successfully',
@@ -289,12 +338,48 @@ export default function AdminProjects() {
               />
             </div>
             <div>
-              <label className="block text-sm font-medium mb-2">Image URL</label>
-              <Input
-                value={formData.image}
-                onChange={(e) => setFormData({ ...formData, image: e.target.value })}
-                placeholder="Image URL"
-              />
+              <label className="block text-sm font-medium mb-2">Project Image</label>
+              <div className="space-y-3">
+                <div className="flex items-center gap-2">
+                  <input
+                    ref={fileInputRef}
+                    type="file"
+                    accept="image/*"
+                    onChange={handleImageChange}
+                    className="hidden"
+                  />
+                  <Button
+                    type="button"
+                    variant="outline"
+                    onClick={() => fileInputRef.current?.click()}
+                    className="gap-2"
+                  >
+                    <Upload className="h-4 w-4" />
+                    {imageFile ? 'Change Image' : 'Upload Image'}
+                  </Button>
+                  {(imagePreview || imageFile) && (
+                    <Button type="button" variant="ghost" size="sm" onClick={clearImage} className="text-muted-foreground">
+                      <X className="h-4 w-4 mr-1" />
+                      Remove
+                    </Button>
+                  )}
+                </div>
+                {imagePreview && (
+                  <div className="relative w-32 h-24 rounded-lg overflow-hidden border bg-muted">
+                    <img
+                      src={imagePreview}
+                      alt="Preview"
+                      className="object-cover w-full h-full"
+                    />
+                  </div>
+                )}
+                <p className="text-xs text-muted-foreground">Or paste URL below</p>
+                <Input
+                  value={formData.image}
+                  onChange={(e) => setFormData({ ...formData, image: e.target.value })}
+                  placeholder="Image URL (optional if uploading)"
+                />
+              </div>
             </div>
             <div className="grid grid-cols-2 gap-4">
               <div>

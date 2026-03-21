@@ -77,21 +77,35 @@ export const serviceAPI = {
   delete: (id: string) => apiRequest(`/services/${id}`, { method: 'DELETE' }),
 };
 
-// Project API
+// Project API - create/update support FormData for image upload
+const projectFormRequest = async (endpoint: string, formData: FormData, method: 'POST' | 'PUT') => {
+  const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
+  const token = getAuthToken();
+  const headers: HeadersInit = {};
+  if (token) headers['Authorization'] = `Bearer ${token}`;
+  const response = await fetch(`${API_URL}${endpoint}`, {
+    method,
+    headers,
+    body: formData,
+  });
+  const data = await response.json();
+  if (!response.ok) {
+    if (response.status === 401) {
+      localStorage.removeItem('adminToken');
+      localStorage.removeItem('admin');
+      window.location.href = '/admin/login';
+    }
+    throw new Error(data.message || 'Request failed');
+  }
+  return data;
+};
+
 export const projectAPI = {
   getAll: (category?: string) =>
     apiRequest(category ? `/projects?category=${category}` : '/projects'),
   getOne: (id: string) => apiRequest(`/projects/${id}`),
-  create: (data: any) =>
-    apiRequest('/projects', {
-      method: 'POST',
-      body: JSON.stringify(data),
-    }),
-  update: (id: string, data: any) =>
-    apiRequest(`/projects/${id}`, {
-      method: 'PUT',
-      body: JSON.stringify(data),
-    }),
+  create: (formData: FormData) => projectFormRequest('/projects', formData, 'POST'),
+  update: (id: string, formData: FormData) => projectFormRequest(`/projects/${id}`, formData, 'PUT'),
   delete: (id: string) => apiRequest(`/projects/${id}`, { method: 'DELETE' }),
 };
 
@@ -103,6 +117,36 @@ export const aboutAPI = {
       method: 'PUT',
       body: JSON.stringify(data),
     }),
+};
+
+// Upload API (Admin only)
+export const uploadAPI = {
+  image: async (file: File, folder?: string) => {
+    const formData = new FormData();
+    formData.append('image', file);
+    if (folder) formData.append('folder', folder);
+
+    const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
+    const token = getAuthToken();
+    const headers: HeadersInit = {};
+    if (token) headers['Authorization'] = `Bearer ${token}`;
+
+    const response = await fetch(`${API_URL}/upload/image`, {
+      method: 'POST',
+      headers,
+      body: formData,
+    });
+    const data = await response.json();
+    if (!response.ok) {
+      if (response.status === 401) {
+        localStorage.removeItem('adminToken');
+        localStorage.removeItem('admin');
+        window.location.href = '/admin/login';
+      }
+      throw new Error(data.message || 'Upload failed');
+    }
+    return data;
+  },
 };
 
 // Auth API

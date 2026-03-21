@@ -27,7 +27,7 @@ const iconMap: Record<string, any> = {
 
 const whyChooseUs = [
   { icon: Shield, title: 'Data Credible', description: 'Transparent and verified project records' },
-  { icon: Award, title: 'Trusted Company', description: 'ISO certified with 40+ years of excellence' },
+  { icon: Award, title: 'Trusted Company', description: 'ISO certified with 44+ years of excellence' },
   { icon: Clock, title: 'Fast Execution', description: 'On-time delivery with efficient workflows' },
   { icon: Users, title: 'Best Output', description: 'Quality results backed by skilled workforce' },
 ];
@@ -74,10 +74,10 @@ export default function Index() {
 
   const [services, setServices] = useState<any[]>([]);
   const [stats, setStats] = useState([
-    { value: 40, suffix: '+', label: 'Years Experience' },
+    { value: 44, suffix: '+', label: 'Years Experience' },
     { value: 100, suffix: '+', label: 'Projects Completed' },
-    { value: 3000, suffix: '+', label: 'Skilled Workers' },
-    { value: 103, suffix: '+', label: 'Equipments' },
+    { value: 600, suffix: '+', label: 'Skilled Workers' },
+    { value: 103, suffix: '+', label: 'Engineers' },
   ]);
   const [projects, setProjects] = useState<any[]>([]);
   const [aboutImageUrl, setAboutImageUrl] = useState<string | null>(null);
@@ -105,8 +105,8 @@ export default function Index() {
       if (aboutData?.teamStats) {
         const projectCount = projectsData.length;
         setStats([
-          { value: aboutData.teamStats.yearsExperience || 40, suffix: '+', label: 'Years Experience' },
-          { value: projectCount || 100, suffix: '+', label: 'Projects Completed' },
+          { value: aboutData.teamStats.yearsExperience || 44, suffix: '+', label: 'Years Experience' },
+          { value: 29, suffix: '+', label: 'Projects Completed' },
           { value: aboutData.teamStats.technicians || 3000, suffix: '+', label: 'Skilled Workers' },
           { value: aboutData.teamStats.equipments || 103, suffix: '+', label: 'Equipaments' },
         ]);
