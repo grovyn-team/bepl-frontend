@@ -1,6 +1,6 @@
 # BEPL - Babu Erectors Pvt. Ltd. Website
 
-A modern, responsive website for Babu Erectors Pvt. Ltd., a leading construction and engineering company specializing in structural steel erection, equipment installation, and heavy engineering services.
+A modern, responsive website for Babu Erectors Pvt. Ltd., a leading construction and engineering company specializing in structural steel erection, equipment erection, and heavy engineering services.
 
 ## 🚀 Features
 

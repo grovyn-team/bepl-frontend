@@ -60,7 +60,7 @@ const projects = [
     category: 'Power Plants',
     location: 'Hazira',
     duration: '2011 - 2013',
-    description: 'Boiler and Turbine Auxiliary equipment installation and maintenance.',
+    description: 'Boiler and Turbine Auxiliary equipment erection and maintenance.',
     image: essarPowerImage,
   },
   {

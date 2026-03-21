@@ -36,7 +36,7 @@ const clients = ['AMNS', 'JSW', 'ESSAR', 'RELIANCE', 'NTPC', 'ONGC'];
 
 const testimonials = [
   {
-    quote: 'BEPL delivered our CRM 2 expansion with precision and on schedule. Their expertise in structural steel erection and equipment installation is unmatched. A trusted partner for critical projects.',
+    quote: 'BEPL delivered our CRM 2 expansion with precision and on schedule. Their expertise in structural steel erection and equipment erection is unmatched. A trusted partner for critical projects.',
     client: 'AMNS India',
     context: 'Cold Rolling Mill & PLTCM Projects',
   },
@@ -108,7 +108,7 @@ export default function Index() {
           { value: aboutData.teamStats.yearsExperience || 44, suffix: '+', label: 'Years Experience' },
           { value: 29, suffix: '+', label: 'Projects Completed' },
           { value: aboutData.teamStats.technicians || 3000, suffix: '+', label: 'Skilled Workers' },
-          { value: aboutData.teamStats.equipments || 103, suffix: '+', label: 'Equipaments' },
+          { value: aboutData.teamStats.equipments || 103, suffix: '+', label: 'Equipments' },
         ]);
       }
       // Set about image if available
@@ -179,7 +179,7 @@ export default function Index() {
               transition={{ duration: 0.8, delay: 0.4 }}
               className="text-lg md:text-xl text-white/95 mb-10 max-w-2xl leading-relaxed"
             >
-              Leading contractors in structural steel erection, equipment installation,
+              Leading contractors in structural steel erection, equipment erection,
               and heavy engineering services. Delivering excellence across India for over four decades.
             </motion.p>
 
@@ -276,7 +276,7 @@ export default function Index() {
               <p className="text-muted-foreground text-lg leading-relaxed mb-6">
                 Babu Erectors Pvt. Ltd. was formed in 2013 as a sister concern of Babu Engineering Works,
                 established in 1982. We are the leading contractors in fabrication and erection of structural works,
-                mechanical equipment installation, and piping systems.
+                mechanical equipment erection, and piping systems.
               </p>
               <p className="text-muted-foreground leading-relaxed mb-8">
                 With headquarters in Surat, Gujarat, and operations across India, we've positioned ourselves

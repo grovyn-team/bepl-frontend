@@ -13,7 +13,7 @@ const footerLinks = {
   ],
   services: [
     { label: 'Structural Steel Erection', href: '/services' },
-    { label: 'Equipment Installation', href: '/services' },
+    { label: 'Equipment Erection', href: '/services' },
     { label: 'Piping Works', href: '/services' },
     { label: 'Plant Maintenance', href: '/services' },
   ],
@@ -68,7 +68,7 @@ export function Footer() {
             </Link>
             <p className="text-muted-foreground text-sm mb-6 leading-relaxed">
               An ISO Certified Company delivering excellence in structural steel erection, 
-              equipment installation, and heavy engineering services since 1982.
+              equipment erection, and heavy engineering services since 1982.
             </p>
             <div className="flex gap-3">
               <a 
