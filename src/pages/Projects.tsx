@@ -322,7 +322,7 @@ export default function Projects() {
                 Project History
               </span>
               <h2 className="font-display text-3xl md:text-4xl font-bold">
-                100+ Projects Completed
+                300+ Projects Completed
               </h2>
             </div>
           </ScrollReveal>

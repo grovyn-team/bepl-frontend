@@ -75,9 +75,9 @@ export default function Index() {
   const [services, setServices] = useState<any[]>([]);
   const [stats, setStats] = useState([
     { value: 44, suffix: '+', label: 'Years Experience' },
-    { value: 100, suffix: '+', label: 'Projects Completed' },
+    { value: 300, suffix: '+', label: 'Projects Completed' },
     { value: 600, suffix: '+', label: 'Skilled Workers' },
-    { value: 103, suffix: '+', label: 'Engineers' },
+    { value: 103, suffix: '+', label: 'Equipments' },
   ]);
   const [projects, setProjects] = useState<any[]>([]);
   const [aboutImageUrl, setAboutImageUrl] = useState<string | null>(null);
@@ -106,7 +106,7 @@ export default function Index() {
         const projectCount = projectsData.length;
         setStats([
           { value: aboutData.teamStats.yearsExperience || 44, suffix: '+', label: 'Years Experience' },
-          { value: 29, suffix: '+', label: 'Projects Completed' },
+          { value: 300, suffix: '+', label: 'Projects Completed' },
           { value: aboutData.teamStats.technicians || 3000, suffix: '+', label: 'Skilled Workers' },
           { value: aboutData.teamStats.equipments || 103, suffix: '+', label: 'Equipments' },
         ]);
