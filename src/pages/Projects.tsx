@@ -1,7 +1,8 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Link } from 'react-router-dom';
-import { Calendar, MapPin, Building2, ArrowRight, Filter } from 'lucide-react';
+import { Calendar, MapPin, Building2, ArrowRight, Filter, CheckCircle2 } from 'lucide-react';
+import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import { Layout } from '@/components/layout/Layout';
 import { SectionHeading } from '@/components/ui/section-heading';
@@ -134,8 +135,59 @@ const keyClients = [
   { name: 'BHEL', projects: 4, description: 'Equipment erection partnerships' },
 ];
 
+const runningProjects = [
+  {
+    id: 'r1',
+    title: 'AMNS India - CRM 2 Project',
+    client: 'AMNS',
+    category: 'Steel Plants',
+    location: 'Hazira',
+    description: 'PLTCM structure and equipment erection for Cold Rolling Mill expansion, including structural steel, conveyor systems, and precision equipment alignment.',
+    progress: 75,
+    highlights: ['PLTCM Structure & Equipment erection', 'Precision equipment alignment', 'Parallel piping installation'],
+    image: projectsSteel,
+  },
+  {
+    id: 'r2',
+    title: 'AMNS Coke Oven Project',
+    client: 'AMNS',
+    category: 'Steel Plants',
+    location: 'Hazira',
+    description: 'Complete piping and structural steel work for new coke oven facility, including coal handling and gas management systems.',
+    progress: 60,
+    highlights: ['Structural steel fabrication & erection', 'Complete piping systems', 'Coal handling infrastructure'],
+    image: servicesPiping,
+  },
+  {
+    id: 'r3',
+    title: 'JSW JVML BF Project',
+    client: 'JSW',
+    category: 'Steel Plants',
+    location: 'Bellary',
+    description: 'Fabrication and erection of piping systems for Blast Furnace project, encompassing hot blast mains, stoves, and gas recovery systems.',
+    progress: 35,
+    highlights: ['Blast furnace piping erection', 'Hot blast main installation', 'Gas recovery system setup'],
+    image: servicesCrane,
+  },
+];
+
+const galleryCategories = ['All', 'Steel Plants', 'Power Plants', 'Refineries', 'Infrastructure'];
+
+const galleryItems = [
+  { src: projectsSteel, category: 'Steel Plants', caption: 'Structural steel erection — AMNS Hazira' },
+  { src: servicesCrane, category: 'Steel Plants', caption: 'Heavy lift operation — JSW Dolvi' },
+  { src: essarPowerImage, category: 'Power Plants', caption: 'Boiler installation — Essar Power Plant, Hazira' },
+  { src: ntpcGasImage, category: 'Power Plants', caption: 'Gas turbine erection — NTPC facilities' },
+  { src: relianceHmdImage, category: 'Refineries', caption: 'Equipment installation — Reliance HMD, Hazira' },
+  { src: servicesPiping, category: 'Refineries', caption: 'Piping system installation' },
+  { src: delhiMetroImage, category: 'Infrastructure', caption: 'Structural steel erection — Delhi Metro Railway' },
+  { src: bridge, category: 'Infrastructure', caption: "India's first cable-stayed railway bridge — Hanji Khad" },
+  { src: projectsPower, category: 'Power Plants', caption: 'Power plant construction — equipment commissioning' },
+];
+
 export default function Projects() {
   const [activeCategory, setActiveCategory] = useState('All');
+  const [galleryFilter, setGalleryFilter] = useState('All');
   const [projectsData, setProjectsData] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -279,6 +331,149 @@ export default function Projects() {
                   </Link>
                 </motion.div>
               ))}
+            </motion.div>
+          </AnimatePresence>
+        </div>
+      </section>
+
+      {/* Running Projects */}
+      <section className="py-24 lg:py-32 bg-muted/50">
+        <div className="container mx-auto px-4">
+          <SectionHeading
+            badge="Active Projects"
+            title="Currently Running Projects"
+            description="Our ongoing engagements across India's leading industrial facilities."
+          />
+
+          <StaggerContainer className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 mt-16" staggerDelay={0.1}>
+            {runningProjects.map((project) => (
+              <StaggerItem key={project.id}>
+                <motion.div
+                  whileHover={{ y: -8 }}
+                  className="bg-card border border-border rounded-2xl overflow-hidden group"
+                >
+                  <div className="relative aspect-[16/10] overflow-hidden">
+                    <img
+                      src={project.image}
+                      alt={project.title}
+                      className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                    />
+                    <div className="absolute top-4 left-4">
+                      <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-500/90 text-white text-xs font-medium">
+                        <span className="w-1.5 h-1.5 rounded-full bg-white animate-pulse" />
+                        In Progress
+                      </span>
+                    </div>
+                    <div className="absolute top-4 right-4">
+                      <span className="px-3 py-1 rounded-full bg-primary/90 text-primary-foreground text-xs font-medium">
+                        {project.category}
+                      </span>
+                    </div>
+                  </div>
+                  <div className="p-6">
+                    <div className="flex items-center gap-4 text-sm text-muted-foreground mb-3">
+                      <span className="flex items-center gap-1">
+                        <Building2 className="h-4 w-4" />
+                        {project.client}
+                      </span>
+                      <span className="flex items-center gap-1">
+                        <MapPin className="h-4 w-4" />
+                        {project.location}
+                      </span>
+                    </div>
+                    <h3 className="font-display font-semibold text-xl mb-2">{project.title}</h3>
+                    <p className="text-muted-foreground text-sm mb-5 leading-relaxed">{project.description}</p>
+
+                    <div className="mb-5">
+                      <div className="flex items-center justify-between text-sm mb-2">
+                        <span className="text-muted-foreground">Progress</span>
+                        <span className="font-semibold text-primary">{project.progress}%</span>
+                      </div>
+                      <div className="h-2 rounded-full bg-muted overflow-hidden">
+                        <motion.div
+                          className="h-full rounded-full bg-primary"
+                          initial={{ width: 0 }}
+                          whileInView={{ width: `${project.progress}%` }}
+                          viewport={{ once: true }}
+                          transition={{ duration: 1, ease: 'easeOut', delay: 0.2 }}
+                        />
+                      </div>
+                    </div>
+
+                    <div>
+                      <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-2">Key Highlights</p>
+                      <ul className="space-y-1.5">
+                        {project.highlights.map((highlight) => (
+                          <li key={highlight} className="flex items-start gap-2 text-sm text-muted-foreground">
+                            <CheckCircle2 className="h-4 w-4 text-primary shrink-0 mt-0.5" />
+                            {highlight}
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  </div>
+                </motion.div>
+              </StaggerItem>
+            ))}
+          </StaggerContainer>
+        </div>
+      </section>
+
+      {/* Photo Gallery */}
+      <section className="py-24 lg:py-32">
+        <div className="container mx-auto px-4">
+          <SectionHeading
+            badge="Gallery"
+            title="Project Photo Gallery"
+            description="A visual record of our work across steel, power, refinery, and infrastructure projects."
+          />
+
+          <div className="flex flex-wrap items-center gap-2 mt-10 mb-8">
+            {galleryCategories.map((cat) => (
+              <button
+                key={cat}
+                onClick={() => setGalleryFilter(cat)}
+                className={cn(
+                  'px-4 py-1.5 rounded-full text-sm font-medium transition-colors',
+                  galleryFilter === cat
+                    ? 'bg-primary text-primary-foreground'
+                    : 'bg-muted text-muted-foreground hover:bg-muted/80'
+                )}
+              >
+                {cat}
+              </button>
+            ))}
+          </div>
+
+          <AnimatePresence mode="wait">
+            <motion.div
+              key={galleryFilter}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -20 }}
+              transition={{ duration: 0.3 }}
+              className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4"
+            >
+              {galleryItems
+                .filter((item) => galleryFilter === 'All' || item.category === galleryFilter)
+                .map((item, index) => (
+                  <motion.div
+                    key={`${item.caption}-${index}`}
+                    whileHover={{ scale: 1.02 }}
+                    className="relative rounded-xl overflow-hidden group cursor-pointer aspect-[4/3]"
+                  >
+                    <img
+                      src={item.src}
+                      alt={item.caption}
+                      className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                    <div className="absolute bottom-0 left-0 right-0 p-4 translate-y-2 group-hover:translate-y-0 opacity-0 group-hover:opacity-100 transition-all duration-300">
+                      <span className="text-xs text-white/70 block mb-0.5">{item.category}</span>
+                      <p className="text-white text-sm font-medium">{item.caption}</p>
+                    </div>
+                  </motion.div>
+                ))}
             </motion.div>
           </AnimatePresence>
         </div>

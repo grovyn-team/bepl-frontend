@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Target, Eye, Users, Award, Shield, CheckCircle2, ChevronLeft, ChevronRight } from 'lucide-react';
+import { Target, Eye, Users, Award, Shield, CheckCircle2, ChevronLeft, ChevronRight, MapPin, HardHat } from 'lucide-react';
 import { Layout } from '@/components/layout/Layout';
 import { SectionHeading } from '@/components/ui/section-heading';
 import { AnimatedCounter } from '@/components/ui/animated-counter';
@@ -9,6 +9,7 @@ import { PageLoader } from '@/components/ui/loader';
 import { aboutAPI } from '@/lib/api';
 import aboutImage from '@/assets/about-industrial.jpg';
 import servicesPiping from '@/assets/services-piping.jpg';
+import servicesCrane from '@/assets/services-crane.jpg';
 import founderImage from '@/assets/founder.jpeg';
 
 // Icon mapping for values
@@ -74,6 +75,84 @@ const certificationCards = [
     occasion: '41st National Safety Day Celebration',
     date: '5th March 2012',
     issuer: 'Essar Steel',
+  },
+];
+
+const safetyEvents = [
+  {
+    title: '48th National Safety Day Celebration',
+    date: '28 March 2019',
+    location: 'Essar Steel India Limited, Hazira',
+    topics: ['PPE Usage & Compliance', 'Hazard Identification (HIRA)', 'Contractor Safety Best Practices'],
+    participation: '300+ workers and supervisors',
+    description: 'BEPL received the Second Prize for Contractors Safety Performance Award at the 1st Steel Safety Day & 48th National Safety Day celebration.',
+    image: servicesCrane,
+  },
+  {
+    title: '43rd National Safety Day Celebration',
+    date: '4 March 2014',
+    location: 'Essar Steel, Hazira',
+    topics: ['Safety Rally & Parade', 'First Aid Demonstrations', 'Fire Safety Awareness'],
+    participation: '200+ workers and staff',
+    description: 'BEPL actively participated and won the Winner Trophy for the Safety Rally, reinforcing our culture of proactive safety engagement.',
+    image: servicesPiping,
+  },
+  {
+    title: '42nd National Safety Day Celebration',
+    date: '5 March 2012',
+    location: 'Essar Steel, Hazira',
+    topics: ['Toolbox Talks', 'Emergency Response Drills', 'PPE Inspection'],
+    participation: '150+ participants',
+    description: 'BEPL earned the Second Prize for Best Safety Rally, demonstrating consistent commitment to workplace safety standards across all project sites.',
+    image: aboutImage,
+  },
+];
+
+const staffMeetings = [
+  {
+    icon: Target,
+    purpose: 'Weekly Site Review',
+    frequency: 'Weekly',
+    description: 'Site managers and supervisors align on project progress, identify blockers, and coordinate resources to maintain schedule.',
+    keyPoints: ['Progress tracking vs. plan', 'Safety observations review', 'Resource & manpower allocation'],
+    participation: 'Site managers & supervisors',
+  },
+  {
+    icon: Users,
+    purpose: 'Monthly Planning Meeting',
+    frequency: 'Monthly',
+    description: 'Cross-functional planning session covering project milestones, client coordination, procurement status, and upcoming work fronts.',
+    keyPoints: ['Project milestone review', 'Client feedback & coordination', 'Procurement & logistics planning'],
+    participation: 'All department heads',
+  },
+  {
+    icon: Shield,
+    purpose: 'Pre-Shift Safety Briefing',
+    frequency: 'Daily',
+    description: 'Every shift begins with a structured toolbox talk ensuring all workers are briefed on daily hazards, PPE requirements, and emergency protocols.',
+    keyPoints: ['Daily hazard identification', 'PPE compliance check', 'Emergency protocol review'],
+    participation: 'All site workers — every shift',
+  },
+];
+
+const trainingActivities = [
+  {
+    icon: HardHat,
+    title: 'Toolbox Talks',
+    frequency: 'Daily',
+    description: 'Structured pre-shift safety briefings covering site-specific hazards, safe work procedures, and PPE requirements for each day\'s tasks.',
+  },
+  {
+    icon: Shield,
+    title: 'Safety Drills',
+    frequency: 'Quarterly',
+    description: 'Periodic emergency response drills including fire evacuation, first aid response, and confined space rescue scenarios.',
+  },
+  {
+    icon: Award,
+    title: 'Certifications & Training',
+    frequency: 'Ongoing',
+    description: 'Structured programs for rigging, scaffolding, welding safety, and equipment operation. Workers earn certifications upon completion.',
   },
 ];
 
@@ -462,6 +541,132 @@ export default function About() {
           </div>
         </div>
       </section>
+      {/* Safety Day Programs */}
+      <section className="py-24 lg:py-32 bg-muted/50">
+        <div className="container mx-auto px-4">
+          <SectionHeading
+            badge="Safety Programs"
+            title="Safety Day Programs"
+            description="Celebrating and reinforcing our zero-accident culture through structured safety events and awareness programs."
+          />
+
+          <StaggerContainer className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 mt-16" staggerDelay={0.1}>
+            {safetyEvents.map((event) => (
+              <StaggerItem key={event.title}>
+                <motion.div
+                  whileHover={{ y: -4 }}
+                  className="bg-card border border-border rounded-2xl overflow-hidden group h-full flex flex-col"
+                >
+                  <div className="aspect-[16/9] overflow-hidden shrink-0">
+                    <img
+                      src={event.image}
+                      alt={event.title}
+                      className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                    />
+                  </div>
+                  <div className="p-6 flex flex-col flex-1">
+                    <span className="inline-flex items-center px-3 py-1 rounded-full bg-primary/10 text-primary text-xs font-medium mb-3 self-start">
+                      {event.date}
+                    </span>
+                    <h3 className="font-display font-semibold text-lg mb-2">{event.title}</h3>
+                    <p className="flex items-center gap-1.5 text-sm text-muted-foreground mb-3">
+                      <MapPin className="h-4 w-4 shrink-0" />
+                      {event.location}
+                    </p>
+                    <p className="text-muted-foreground text-sm mb-4 leading-relaxed flex-1">{event.description}</p>
+                    <div className="mb-3">
+                      <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-2">Topics Covered</p>
+                      <ul className="space-y-1">
+                        {event.topics.map((topic) => (
+                          <li key={topic} className="flex items-center gap-2 text-sm text-muted-foreground">
+                            <span className="w-1.5 h-1.5 rounded-full bg-primary shrink-0" />
+                            {topic}
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                    <p className="flex items-center gap-1.5 text-sm text-muted-foreground pt-3 border-t border-border">
+                      <Users className="h-4 w-4 shrink-0" />
+                      {event.participation}
+                    </p>
+                  </div>
+                </motion.div>
+              </StaggerItem>
+            ))}
+          </StaggerContainer>
+        </div>
+      </section>
+
+      {/* Staff Meetings */}
+      <section className="py-24 lg:py-32">
+        <div className="container mx-auto px-4">
+          <SectionHeading
+            badge="Our Team"
+            title="Staff Meetings & Coordination"
+            description="Regular structured meetings keep our teams aligned, projects on track, and safety standards upheld."
+          />
+
+          <StaggerContainer className="grid sm:grid-cols-3 gap-6 mt-16" staggerDelay={0.1}>
+            {staffMeetings.map((meeting) => (
+              <StaggerItem key={meeting.purpose}>
+                <div className="bg-card border border-border rounded-2xl p-6 hover:border-primary/50 transition-all h-full flex flex-col">
+                  <div className="flex items-start justify-between mb-4">
+                    <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center">
+                      <meeting.icon className="h-6 w-6 text-primary" />
+                    </div>
+                    <span className="inline-flex items-center px-2.5 py-1 rounded-full bg-primary/10 text-primary text-xs font-medium">
+                      {meeting.frequency}
+                    </span>
+                  </div>
+                  <h3 className="font-display font-semibold text-lg mb-2">{meeting.purpose}</h3>
+                  <p className="text-muted-foreground text-sm mb-4 leading-relaxed flex-1">{meeting.description}</p>
+                  <ul className="space-y-1.5 mb-4">
+                    {meeting.keyPoints.map((point) => (
+                      <li key={point} className="flex items-start gap-2 text-sm text-muted-foreground">
+                        <CheckCircle2 className="h-4 w-4 text-primary shrink-0 mt-0.5" />
+                        {point}
+                      </li>
+                    ))}
+                  </ul>
+                  <p className="flex items-center gap-1.5 text-xs text-muted-foreground pt-3 border-t border-border">
+                    <Users className="h-3.5 w-3.5 shrink-0" />
+                    {meeting.participation}
+                  </p>
+                </div>
+              </StaggerItem>
+            ))}
+          </StaggerContainer>
+        </div>
+      </section>
+
+      {/* Safety & Training Activities */}
+      <section className="py-24 lg:py-32 bg-muted/50">
+        <div className="container mx-auto px-4">
+          <SectionHeading
+            badge="Safety Culture"
+            title="Safety & Training Activities"
+            description="Structured programs that build a skilled, safety-conscious workforce on every site."
+          />
+
+          <StaggerContainer className="grid sm:grid-cols-3 gap-6 mt-16" staggerDelay={0.1}>
+            {trainingActivities.map((activity) => (
+              <StaggerItem key={activity.title}>
+                <div className="text-center p-6 rounded-2xl bg-card border border-border hover:border-primary/50 transition-colors h-full flex flex-col items-center">
+                  <div className="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center mb-4">
+                    <activity.icon className="h-8 w-8 text-primary" />
+                  </div>
+                  <span className="inline-flex items-center px-3 py-1 rounded-full bg-primary/10 text-primary text-xs font-medium mb-3">
+                    {activity.frequency}
+                  </span>
+                  <h3 className="font-display font-semibold text-lg mb-2">{activity.title}</h3>
+                  <p className="text-muted-foreground text-sm leading-relaxed">{activity.description}</p>
+                </div>
+              </StaggerItem>
+            ))}
+          </StaggerContainer>
+        </div>
+      </section>
+
     </Layout>
   );
 }
