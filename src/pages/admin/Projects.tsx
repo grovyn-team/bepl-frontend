@@ -27,6 +27,10 @@ interface Project {
   image?: string;
   order: number;
   isActive: boolean;
+  isRunning: boolean;
+  progress: number;
+  highlights: string[];
+  gallery: { src: string; caption: string }[];
 }
 
 export default function AdminProjects() {
@@ -44,6 +48,10 @@ export default function AdminProjects() {
     image: '',
     order: 0,
     isActive: true,
+    isRunning: false,
+    progress: 0,
+    highlights: [] as string[],
+    gallery: [] as { src: string; caption: string }[],
   });
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [imagePreview, setImagePreview] = useState<string | null>(null);
@@ -84,6 +92,10 @@ export default function AdminProjects() {
         image: project.image || '',
         order: project.order,
         isActive: project.isActive,
+        isRunning: project.isRunning || false,
+        progress: project.progress || 0,
+        highlights: project.highlights || [],
+        gallery: project.gallery || [],
       });
       setImagePreview(project.image || null);
     } else {
@@ -98,6 +110,10 @@ export default function AdminProjects() {
         image: '',
         order: 0,
         isActive: true,
+        isRunning: false,
+        progress: 0,
+        highlights: [],
+        gallery: [],
       });
       setImagePreview(null);
     }
@@ -153,6 +169,10 @@ export default function AdminProjects() {
       formDataToSend.append('description', formData.description);
       formDataToSend.append('order', String(formData.order));
       formDataToSend.append('isActive', String(formData.isActive));
+      formDataToSend.append('isRunning', String(formData.isRunning));
+      formDataToSend.append('progress', String(formData.progress));
+      formDataToSend.append('highlights', JSON.stringify(formData.highlights));
+      formDataToSend.append('gallery', JSON.stringify(formData.gallery));
 
       if (imageFile) {
         formDataToSend.append('image', imageFile);
@@ -229,9 +249,17 @@ export default function AdminProjects() {
                   <p className="text-sm text-muted-foreground mb-2">
                     <span className="font-medium">{project.client}</span> • {project.location}
                   </p>
-                  <span className="inline-block px-2 py-1 bg-primary/10 text-primary text-xs rounded mb-2">
-                    {project.category}
-                  </span>
+                  <div className="flex flex-wrap gap-2 mb-2">
+                    <span className="inline-block px-2 py-1 bg-primary/10 text-primary text-xs rounded">
+                      {project.category}
+                    </span>
+                    {project.isRunning && (
+                      <span className="inline-flex items-center px-2 py-1 bg-emerald-500/10 text-emerald-600 text-xs rounded font-medium border border-emerald-500/20">
+                        <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 mr-1.5 animate-pulse"></span>
+                        Running
+                      </span>
+                    )}
+                  </div>
                   <p className="text-sm text-muted-foreground line-clamp-2 mt-2">
                     {project.description}
                   </p>
@@ -390,7 +418,70 @@ export default function AdminProjects() {
                   onChange={(e) => setFormData({ ...formData, order: Number(e.target.value) })}
                 />
               </div>
-              <div className="flex items-center gap-2 pt-8">
+              <div>
+                <label className="block text-sm font-medium mb-2">Progress (%)</label>
+                <Input
+                  type="number"
+                  min="0"
+                  max="100"
+                  value={formData.progress}
+                  onChange={(e) => setFormData({ ...formData, progress: Number(e.target.value) })}
+                />
+              </div>
+            </div>
+            <div>
+              <label className="block text-sm font-medium mb-2">Highlights (comma separated)</label>
+              <Input
+                value={formData.highlights.join(', ')}
+                onChange={(e) => setFormData({
+                  ...formData,
+                  highlights: e.target.value.split(',').map(s => s.trim()).filter(Boolean)
+                })}
+                placeholder="e.g., PLTCM Structure, Precision equipment alignment"
+              />
+            </div>
+            <div>
+              <div className="flex justify-between items-center mb-2">
+                <label className="block text-sm font-medium">Gallery Images</label>
+                <Button type="button" variant="outline" size="sm" onClick={() => {
+                  setFormData({ ...formData, gallery: [...formData.gallery, { src: '', caption: '' }] });
+                }}>
+                  <Plus className="h-4 w-4 mr-1" /> Add Image
+                </Button>
+              </div>
+              <div className="space-y-2">
+                {formData.gallery.map((item, index) => (
+                  <div key={index} className="flex gap-2">
+                    <Input
+                      placeholder="Image URL"
+                      value={item.src}
+                      onChange={(e) => {
+                        const newGallery = [...formData.gallery];
+                        newGallery[index].src = e.target.value;
+                        setFormData({ ...formData, gallery: newGallery });
+                      }}
+                    />
+                    <Input
+                      placeholder="Caption"
+                      value={item.caption}
+                      onChange={(e) => {
+                        const newGallery = [...formData.gallery];
+                        newGallery[index].caption = e.target.value;
+                        setFormData({ ...formData, gallery: newGallery });
+                      }}
+                    />
+                    <Button type="button" variant="ghost" size="icon" onClick={() => {
+                      const newGallery = formData.gallery.filter((_, i) => i !== index);
+                      setFormData({ ...formData, gallery: newGallery });
+                    }}>
+                      <Trash2 className="h-4 w-4" />
+                    </Button>
+                  </div>
+                ))}
+              </div>
+            </div>
+            <div className="flex items-center gap-6 pt-4">
+              <div className="flex items-center gap-2">
                 <input
                   type="checkbox"
                   id="isActive"
@@ -400,6 +491,18 @@ export default function AdminProjects() {
                 />
                 <label htmlFor="isActive" className="text-sm font-medium">
                   Active
+                </label>
+              </div>
+              <div className="flex items-center gap-2">
+                <input
+                  type="checkbox"
+                  id="isRunning"
+                  checked={formData.isRunning}
+                  onChange={(e) => setFormData({ ...formData, isRunning: e.target.checked })}
+                  className="h-4 w-4"
+                />
+                <label htmlFor="isRunning" className="text-sm font-medium">
+                  Is Running (In Progress)
                 </label>
               </div>
             </div>

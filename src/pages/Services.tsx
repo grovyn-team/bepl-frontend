@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { motion } from 'framer-motion';
+import { AnimatePresence, motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import { Building2, Wrench, HardHat, Settings, Cog, Hammer, ArrowRight, CheckCircle2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -7,10 +7,48 @@ import { Layout } from '@/components/layout/Layout';
 import { SectionHeading } from '@/components/ui/section-heading';
 import { ScrollReveal, StaggerContainer, StaggerItem } from '@/components/animations/ScrollAnimations';
 import { PageLoader } from '@/components/ui/loader';
+import { Skeleton } from '@/components/ui/skeleton';
 import { serviceAPI } from '@/lib/api';
 import servicesCrane from '@/assets/services-crane.jpg';
 import servicesPiping from '@/assets/services-piping.jpg';
 import projectsSteel from '@/assets/projects-steel.jpg';
+
+// Skeleton components
+const ServiceHeroSkeleton = () => (
+  <div className="max-w-3xl mx-auto text-center">
+    <Skeleton className="h-8 w-32 rounded-full mx-auto mb-6" />
+    <Skeleton className="h-16 w-full mb-6" />
+    <Skeleton className="h-6 w-full mb-2" />
+    <Skeleton className="h-6 w-2/3 mx-auto" />
+  </div>
+);
+
+const ServiceRowSkeleton = ({ index }: { index: number }) => (
+  <div className={`grid lg:grid-cols-2 gap-12 lg:gap-20 items-center ${index % 2 === 1 ? 'lg:flex-row-reverse' : ''}`}>
+    <div className={`order-2 ${index % 2 === 1 ? 'lg:order-1' : 'lg:order-2'}`}>
+      <Skeleton className="rounded-2xl w-full aspect-[4/3]" />
+    </div>
+    <div className={`order-1 ${index % 2 === 1 ? 'lg:order-2' : 'lg:order-1'} space-y-4`}>
+      <Skeleton className="w-14 h-14 rounded-xl mb-6" />
+      <Skeleton className="h-10 w-3/4 mb-4" />
+      <Skeleton className="h-4 w-full" />
+      <Skeleton className="h-4 w-full" />
+      <Skeleton className="h-4 w-2/3 mb-8" />
+      <div className="grid sm:grid-cols-2 gap-3 mb-8">
+        {Array.from({ length: 4 }).map((_, i) => (
+          <div key={i} className="flex items-center gap-2">
+            <Skeleton className="h-5 w-5 rounded-full" />
+            <Skeleton className="h-4 w-24" />
+          </div>
+        ))}
+      </div>
+      <div className="flex gap-3">
+        <Skeleton className="h-10 w-32" />
+        <Skeleton className="h-10 w-44" />
+      </div>
+    </div>
+  </div>
+);
 
 // Fallback images for services (used when API doesn't provide an image)
 const serviceImages = [servicesCrane, servicesPiping, projectsSteel];
@@ -55,14 +93,6 @@ export default function Services() {
     }
   };
 
-  if (loading) {
-    return (
-      <Layout>
-        <PageLoader />
-      </Layout>
-    );
-  }
-
   return (
     <Layout>
       {/* Hero Section */}
@@ -72,107 +102,123 @@ export default function Services() {
           <div className="absolute inset-0 bg-gradient-to-b from-muted/80 via-muted/50 to-background" />
         </div>
         <div className="container mx-auto px-4 relative">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="max-w-3xl mx-auto text-center"
-          >
-            <span className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-primary/10 text-primary text-sm font-medium mb-6">
-              <span className="w-1.5 h-1.5 rounded-full bg-primary" />
-              Our Services
-            </span>
-            <h1 className="font-display text-4xl md:text-5xl lg:text-6xl font-bold mb-6">
-              Comprehensive <span className="text-gradient">Construction Solutions</span>
-            </h1>
-            <p className="text-muted-foreground text-lg md:text-xl leading-relaxed">
-              From structural steel erection to complete plant maintenance, we deliver 
-              end-to-end engineering services with precision and excellence.
-            </p>
-          </motion.div>
+          {loading ? (
+            <ServiceHeroSkeleton />
+          ) : (
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="max-w-3xl mx-auto text-center"
+            >
+              <span className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-primary/10 text-primary text-sm font-medium mb-6">
+                <span className="w-1.5 h-1.5 rounded-full bg-primary" />
+                Our Services
+              </span>
+              <h1 className="font-display text-4xl md:text-5xl lg:text-6xl font-bold mb-6">
+                Comprehensive <span className="text-gradient">Construction Solutions</span>
+              </h1>
+              <p className="text-muted-foreground text-lg md:text-xl leading-relaxed">
+                From structural steel erection to complete plant maintenance, we deliver
+                end-to-end engineering services with precision and excellence.
+              </p>
+            </motion.div>
+          )}
         </div>
       </section>
 
       {/* Main Services */}
       <section className="py-24">
         <div className="container mx-auto px-4">
-          <div className="space-y-32">
-            {services.map((service, index) => (
-              <div 
-                key={service._id || service.id}
-                id={service._id || service.id}
-                className="scroll-mt-32"
-              >
-                <div className={`grid lg:grid-cols-2 gap-12 lg:gap-20 items-center ${
-                  index % 2 === 1 ? 'lg:flex-row-reverse' : ''
-                }`}>
-                  <ScrollReveal direction={index % 2 === 0 ? 'left' : 'right'}>
-                    <div className={`order-2 ${index % 2 === 1 ? 'lg:order-1' : 'lg:order-2'}`}>
-                      <div className="relative">
-                        <img 
-                          src={service.image || serviceImages[index % serviceImages.length]} 
-                          alt={service.title}
-                          className="rounded-2xl shadow-2xl w-full aspect-[4/3] object-cover"
-                        />
-                        {service.icon && iconMap[service.icon] && (() => {
-                          const IconComponent = iconMap[service.icon] as React.ComponentType<{ className?: string }>;
-                          return (
-                            <div className="absolute -bottom-4 -right-4 w-24 h-24 bg-primary rounded-xl flex items-center justify-center shadow-xl">
-                              <IconComponent className="h-10 w-10 text-primary-foreground" />
-                            </div>
-                          );
-                        })()}
-                      </div>
-                    </div>
-                  </ScrollReveal>
-
-                  <ScrollReveal direction={index % 2 === 0 ? 'right' : 'left'}>
-                    <div className={`order-1 ${index % 2 === 1 ? 'lg:order-2' : 'lg:order-1'}`}>
-                      {service.icon && iconMap[service.icon] && (() => {
-                        const IconComponent = iconMap[service.icon] as React.ComponentType<{ className?: string }>;
-                        return (
-                          <div className="w-14 h-14 rounded-xl bg-primary/10 flex items-center justify-center mb-6">
-                            <IconComponent className="h-7 w-7 text-primary" />
+          <AnimatePresence mode="wait">
+            <motion.div
+              key={loading ? 'loading' : 'content'}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.4 }}
+              className="space-y-32"
+            >
+              {loading ? (
+                Array.from({ length: 3 }).map((_, i) => <ServiceRowSkeleton key={i} index={i} />)
+              ) : (
+                services.map((service, index) => (
+                  <div
+                    key={service._id || service.id}
+                    id={service._id || service.id}
+                    className="scroll-mt-32"
+                  >
+                    <div className={`grid lg:grid-cols-2 gap-12 lg:gap-20 items-center ${index % 2 === 1 ? 'lg:flex-row-reverse' : ''
+                      }`}>
+                      <ScrollReveal direction={index % 2 === 0 ? 'left' : 'right'}>
+                        <div className={`order-2 ${index % 2 === 1 ? 'lg:order-1' : 'lg:order-2'}`}>
+                          <div className="relative">
+                            <img
+                              src={service.image || serviceImages[index % serviceImages.length]}
+                              alt={service.title}
+                              className="rounded-2xl shadow-2xl w-full aspect-[4/3] object-cover"
+                            />
+                            {service.icon && iconMap[service.icon] && (() => {
+                              const IconComponent = iconMap[service.icon] as React.ComponentType<{ className?: string }>;
+                              return (
+                                <div className="absolute -bottom-4 -right-4 w-24 h-24 bg-primary rounded-xl flex items-center justify-center shadow-xl">
+                                  <IconComponent className="h-10 w-10 text-primary-foreground" />
+                                </div>
+                              );
+                            })()}
                           </div>
-                        );
-                      })()}
-                      <Link to={`/services/${service._id || service.id}`}>
-                        <h2 className="font-display text-3xl md:text-4xl font-bold mb-4 hover:text-primary transition-colors cursor-pointer">
-                          {service.title}
-                        </h2>
-                      </Link>
-                      <p className="text-muted-foreground text-lg leading-relaxed mb-8">
-                        {service.description}
-                      </p>
-                      {service.features && service.features.length > 0 && (
-                        <ul className="grid sm:grid-cols-2 gap-3 mb-8">
-                          {service.features.map((feature, idx) => (
-                            <li key={idx} className="flex items-start gap-2">
-                              <CheckCircle2 className="h-5 w-5 text-primary shrink-0 mt-0.5" />
-                              <span className="text-sm">{feature}</span>
-                            </li>
-                          ))}
-                        </ul>
-                      )}
-                      <div className="flex gap-3">
-                        <Link to={`/services/${service._id || service.id}`}>
-                          <Button variant="outline" className="gap-2">
-                            View Details
-                            <ArrowRight className="h-4 w-4" />
-                          </Button>
-                        </Link>
-                        <Link to="/contact">
-                          <Button variant="default" className="gap-2">
-                            Discuss Your Project
-                            <ArrowRight className="h-4 w-4" />
-                          </Button>
-                        </Link>
-                      </div>
+                        </div>
+                      </ScrollReveal>
+
+                      <ScrollReveal direction={index % 2 === 0 ? 'right' : 'left'}>
+                        <div className={`order-1 ${index % 2 === 1 ? 'lg:order-2' : 'lg:order-1'}`}>
+                          {service.icon && iconMap[service.icon] && (() => {
+                            const IconComponent = iconMap[service.icon] as React.ComponentType<{ className?: string }>;
+                            return (
+                              <div className="w-14 h-14 rounded-xl bg-primary/10 flex items-center justify-center mb-6">
+                                <IconComponent className="h-7 w-7 text-primary" />
+                              </div>
+                            );
+                          })()}
+                          <Link to={`/services/${service._id || service.id}`}>
+                            <h2 className="font-display text-3xl md:text-4xl font-bold mb-4 hover:text-primary transition-colors cursor-pointer">
+                              {service.title}
+                            </h2>
+                          </Link>
+                          <p className="text-muted-foreground text-lg leading-relaxed mb-8">
+                            {service.description}
+                          </p>
+                          {service.features && service.features.length > 0 && (
+                            <ul className="grid sm:grid-cols-2 gap-3 mb-8">
+                              {service.features.map((feature: string, idx: number) => (
+                                <li key={idx} className="flex items-start gap-2">
+                                  <CheckCircle2 className="h-5 w-5 text-primary shrink-0 mt-0.5" />
+                                  <span className="text-sm">{feature}</span>
+                                </li>
+                              ))}
+                            </ul>
+                          )}
+                          <div className="flex gap-3">
+                            <Link to={`/services/${service._id || service.id}`}>
+                              <Button variant="outline" className="gap-2">
+                                View Details
+                                <ArrowRight className="h-4 w-4" />
+                              </Button>
+                            </Link>
+                            <Link to="/contact">
+                              <Button variant="default" className="gap-2">
+                                Discuss Your Project
+                                <ArrowRight className="h-4 w-4" />
+                              </Button>
+                            </Link>
+                          </div>
+                        </div>
+                      </ScrollReveal>
                     </div>
-                  </ScrollReveal>
-                </div>
-              </div>
-            ))}
-          </div>
+                  </div>
+                ))
+              )}
+            </motion.div>
+          </AnimatePresence>
         </div>
       </section>
 
@@ -217,18 +263,18 @@ export default function Services() {
               </h2>
               <div className="space-y-4 text-muted-foreground leading-relaxed">
                 <p>
-                  Our engineers will take your vision and necessary requirements, then transform 
-                  them into the products. Our experts work closely with your execution team to 
+                  Our engineers will take your vision and necessary requirements, then transform
+                  them into the products. Our experts work closely with your execution team to
                   identify the appropriate technologies needed to achieve the target within the given time.
                 </p>
                 <p>
-                  Our process starts with a clear understanding of all technical quality and safety 
-                  requirements. We then utilize equipment and drawings, through analysis, and other 
+                  Our process starts with a clear understanding of all technical quality and safety
+                  requirements. We then utilize equipment and drawings, through analysis, and other
                   disciplines as necessary to create custom production as per your exact needs.
                 </p>
                 <p>
-                  We leverage our expertise from cross-industry experience in heavy engineering and 
-                  industrial products to deliver solutions with the highest possible design and quality 
+                  Our leverage our expertise from cross-industry experience in heavy engineering and
+                  industrial products to deliver solutions with the highest possible design and quality
                   standards.
                 </p>
               </div>
@@ -270,7 +316,7 @@ export default function Services() {
                 Ready to Start Your Project?
               </h2>
               <p className="text-muted-foreground text-lg mb-8">
-                Our team is ready to discuss your industrial construction needs and 
+                Our team is ready to discuss your industrial construction needs and
                 provide tailored solutions.
               </p>
               <Link to="/contact">

@@ -1,12 +1,13 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Link } from 'react-router-dom';
-import { Calendar, MapPin, Building2, ArrowRight, Filter, CheckCircle2 } from 'lucide-react';
+import { Calendar, MapPin, Building2, ArrowRight, Filter, CheckCircle2, Clock } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import { Layout } from '@/components/layout/Layout';
 import { SectionHeading } from '@/components/ui/section-heading';
 import { ScrollReveal, StaggerContainer, StaggerItem } from '@/components/animations/ScrollAnimations';
+import { Skeleton } from '@/components/ui/skeleton';
 import { projectAPI } from '@/lib/api';
 import projectsSteel from '@/assets/projects-steel.jpg';
 import projectsPower from '@/assets/projects-power.jpg';
@@ -32,6 +33,47 @@ const projectImagePool = [
 ];
 
 const categories = ['All', 'Steel Plants', 'Power Plants', 'Refineries', 'Infrastructure'];
+
+// Skeleton components
+const ProjectCardSkeleton = () => (
+  <div className="bg-card border border-border rounded-2xl overflow-hidden shadow-sm">
+    <Skeleton className="aspect-[16/10] w-full" />
+    <div className="p-8">
+      <Skeleton className="h-4 w-24 mb-4" />
+      <Skeleton className="h-8 w-full mb-3" />
+      <Skeleton className="h-4 w-full mb-2" />
+      <Skeleton className="h-4 w-2/3 mb-6" />
+      <div className="flex gap-4 pt-6 border-t border-border">
+        <Skeleton className="h-4 w-20" />
+        <Skeleton className="h-4 w-20" />
+      </div>
+    </div>
+  </div>
+);
+
+const RunningProjectCardSkeleton = () => (
+  <div className="bg-card border border-border rounded-2xl overflow-hidden flex flex-col">
+    <Skeleton className="aspect-[16/10] w-full" />
+    <div className="p-8">
+      <div className="flex items-center justify-between mb-2">
+        <Skeleton className="h-4 w-24" />
+        <Skeleton className="h-4 w-12" />
+      </div>
+      <Skeleton className="h-2 w-full rounded-full mb-6" />
+      <Skeleton className="h-8 w-full mb-3" />
+      <Skeleton className="h-4 w-2/3 mb-6" />
+      <div className="space-y-2">
+        <Skeleton className="h-4 w-full" />
+        <Skeleton className="h-4 w-full" />
+        <Skeleton className="h-4 w-2/3" />
+      </div>
+    </div>
+  </div>
+);
+
+const GalleryItemSkeleton = () => (
+  <Skeleton className="aspect-square w-full rounded-xl" />
+);
 
 const projects = [
   {
@@ -135,7 +177,7 @@ const keyClients = [
   { name: 'BHEL', projects: 4, description: 'Equipment erection partnerships' },
 ];
 
-const runningProjects = [
+const defaultRunningProjects = [
   {
     id: 'r1',
     title: 'AMNS India - CRM 2 Project',
@@ -173,7 +215,7 @@ const runningProjects = [
 
 const galleryCategories = ['All', 'Steel Plants', 'Power Plants', 'Refineries', 'Infrastructure'];
 
-const galleryItems = [
+const defaultGalleryItems = [
   { src: projectsSteel, category: 'Steel Plants', caption: 'Structural steel erection — AMNS Hazira' },
   { src: servicesCrane, category: 'Steel Plants', caption: 'Heavy lift operation — JSW Dolvi' },
   { src: essarPowerImage, category: 'Power Plants', caption: 'Boiler installation — Essar Power Plant, Hazira' },
@@ -209,12 +251,37 @@ export default function Projects() {
     }
   };
 
-  // Use API data if available, otherwise fallback to hardcoded
-  const allProjects = projectsData.length > 0 ? projectsData : projects;
+  const allProjects = projectsData.length > 0 ? projectsData : (loading ? [] : projects);
+  const completedProjects = allProjects.filter(p => !p.isRunning);
 
-  const filteredProjects = activeCategory === 'All' 
-    ? allProjects 
-    : allProjects.filter(p => p.category === activeCategory);
+  const filteredProjects = activeCategory === 'All'
+    ? completedProjects
+    : completedProjects.filter(p => p.category === activeCategory);
+
+  const finalRunningProjects = projectsData.some(p => p.isRunning)
+    ? projectsData.filter(p => p.isRunning).map(p => ({
+      id: p._id || p.id,
+      title: p.title,
+      client: p.client,
+      category: p.category,
+      location: p.location,
+      description: p.description,
+      progress: p.progress || 0,
+      highlights: Array.isArray(p.highlights) ? p.highlights : [],
+      image: p.image || projectsSteel,
+    }))
+    : (loading ? [] : defaultRunningProjects);
+
+  const finalGalleryItems = projectsData.some(p => p.gallery && p.gallery.length > 0)
+    ? projectsData.flatMap(p => {
+      const galleryItems = Array.isArray(p.gallery) ? p.gallery : [];
+      return galleryItems.map((g: any) => ({
+        src: g?.src || projectsSteel,
+        category: p.category,
+        caption: g?.caption || p.title,
+      }));
+    })
+    : (loading ? [] : defaultGalleryItems);
 
   return (
     <Layout>
@@ -243,9 +310,9 @@ export default function Projects() {
             </p> */}
             <br />
             <p className="text-muted-foreground leading-relaxed">
-                We have executed projects across a diverse range of sectors-fertilizer plants, refineries, cement plants, steel plants, thermal power plants, gas-based boiler and turbine installations, and cross-country pipelines including Gas Monitoring Stations-delivering end-to-end engineering and construction excellence.
-              </p>
-              {/* <p className="text-muted-foreground leading-relaxed">
+              We have executed projects across a diverse range of sectors-fertilizer plants, refineries, cement plants, steel plants, thermal power plants, gas-based boiler and turbine installations, and cross-country pipelines including Gas Monitoring Stations-delivering end-to-end engineering and construction excellence.
+            </p>
+            {/* <p className="text-muted-foreground leading-relaxed">
                 In steel plants, we have completed work across multiple units: Cold Rolling Mill (CRM), Hot Strip Mill (HSM), Slab Caster, Bar Mill, Wire Rod Mill, CSP Mill, Billet Caster, CRM Complex, CGL, PLTCM projects, COREX, Blast Furnace, Plate Mill, Coke Oven, Sinter Plant, Lime Plant, and Material Handling Systems.
               </p> */}
           </motion.div>
@@ -253,7 +320,7 @@ export default function Projects() {
       </section>
 
       {/* Filter Section */}
-      <section className="py-8 border-b border-border sticky top-20 bg-background/95 backdrop-blur-md z-30">
+      <section className="py-3 border-b border-border sticky top-20 bg-background/95 backdrop-blur-md z-30">
         <div className="container mx-auto px-4">
           <div className="flex items-center gap-4 overflow-x-auto pb-2">
             <Filter className="h-5 w-5 text-muted-foreground shrink-0" />
@@ -277,60 +344,62 @@ export default function Projects() {
         <div className="container mx-auto px-4">
           <AnimatePresence mode="wait">
             <motion.div
-              key={activeCategory}
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -20 }}
-              transition={{ duration: 0.3 }}
+              key={`${activeCategory}-${loading}`}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.2 }}
               className="grid md:grid-cols-2 lg:grid-cols-3 gap-8"
             >
-              {filteredProjects.map((project, index) => (
-                <motion.div
-                  key={project._id || project.id}
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: index * 0.1 }}
-                  whileHover={{ y: -8 }}
-                  className="bg-card border border-border rounded-2xl overflow-hidden group"
-                >
-                  <div className="relative aspect-[16/10] overflow-hidden">
-                    <img 
-                      src={project.image || projectImagePool[index % projectImagePool.length]} 
-                      alt={project.title}
-                      className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
-                    />
-                    <div className="absolute top-4 left-4">
-                      <span className="px-3 py-1 rounded-full bg-primary/90 text-primary-foreground text-xs font-medium">
-                        {project.category}
-                      </span>
-                    </div>
-                  </div>
-                  <Link to={`/projects/${project._id || project.id}`}>
-                    <div className="p-6">
-                      <div className="flex items-center gap-4 text-sm text-muted-foreground mb-3">
-                        <span className="flex items-center gap-1">
+              {loading ? (
+                Array.from({ length: 6 }).map((_, i) => <ProjectCardSkeleton key={i} />)
+              ) : (
+                filteredProjects.map((project, index) => (
+                  <ScrollReveal key={project._id || project.id || index} delay={index * 0.1}>
+                    <motion.div
+                      whileHover={{ y: -8 }}
+                      className="bg-card border border-border rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition-all group"
+                    >
+                      <div className="relative aspect-[16/10] overflow-hidden">
+                        <img
+                          src={project.image || projectImagePool[index % projectImagePool.length]}
+                          alt={project.title}
+                          className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                        />
+                        <div className="absolute top-4 right-4">
+                          <span className="px-3 py-1 rounded-full bg-background/90 backdrop-blur-sm text-xs font-semibold text-primary border border-primary/20">
+                            {project.category}
+                          </span>
+                        </div>
+                      </div>
+
+                      <div className="p-8">
+                        <div className="flex items-center gap-2 text-sm text-primary font-semibold mb-3">
                           <Building2 className="h-4 w-4" />
                           {project.client}
-                        </span>
-                        <span className="flex items-center gap-1">
-                          <MapPin className="h-4 w-4" />
-                          {project.location}
-                        </span>
+                        </div>
+                        <h3 className="font-display text-2xl font-bold mb-3 group-hover:text-primary transition-colors">
+                          {project.title}
+                        </h3>
+                        <p className="text-muted-foreground text-sm leading-relaxed mb-6">
+                          {project.description}
+                        </p>
+
+                        <div className="flex flex-wrap gap-4 pt-6 border-t border-border text-sm text-muted-foreground">
+                          <div className="flex items-center gap-1.5">
+                            <MapPin className="h-4 w-4 text-primary" />
+                            {project.location}
+                          </div>
+                          <div className="flex items-center gap-1.5">
+                            <Clock className="h-4 w-4 text-primary" />
+                            {project.duration}
+                          </div>
+                        </div>
                       </div>
-                      <h3 className="font-display font-semibold text-xl mb-2 group-hover:text-primary transition-colors">
-                        {project.title}
-                      </h3>
-                      <p className="text-muted-foreground text-sm mb-4 line-clamp-2">
-                        {project.description}
-                      </p>
-                      <div className="flex items-center gap-1 text-sm text-muted-foreground">
-                        <Calendar className="h-4 w-4" />
-                        {project.duration}
-                      </div>
-                    </div>
-                  </Link>
-                </motion.div>
-              ))}
+                    </motion.div>
+                  </ScrollReveal>
+                ))
+              )}
             </motion.div>
           </AnimatePresence>
         </div>
@@ -345,77 +414,91 @@ export default function Projects() {
             description="Our ongoing engagements across India's leading industrial facilities."
           />
 
-          <StaggerContainer className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 mt-16" staggerDelay={0.1}>
-            {runningProjects.map((project) => (
-              <StaggerItem key={project.id}>
-                <motion.div
-                  whileHover={{ y: -8 }}
-                  className="bg-card border border-border rounded-2xl overflow-hidden group"
-                >
-                  <div className="relative aspect-[16/10] overflow-hidden">
-                    <img
-                      src={project.image}
-                      alt={project.title}
-                      className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
-                    />
-                    <div className="absolute top-4 left-4">
-                      <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-500/90 text-white text-xs font-medium">
-                        <span className="w-1.5 h-1.5 rounded-full bg-white animate-pulse" />
-                        In Progress
-                      </span>
-                    </div>
-                    <div className="absolute top-4 right-4">
-                      <span className="px-3 py-1 rounded-full bg-primary/90 text-primary-foreground text-xs font-medium">
-                        {project.category}
-                      </span>
-                    </div>
-                  </div>
-                  <div className="p-6">
-                    <div className="flex items-center gap-4 text-sm text-muted-foreground mb-3">
-                      <span className="flex items-center gap-1">
-                        <Building2 className="h-4 w-4" />
-                        {project.client}
-                      </span>
-                      <span className="flex items-center gap-1">
-                        <MapPin className="h-4 w-4" />
-                        {project.location}
-                      </span>
-                    </div>
-                    <h3 className="font-display font-semibold text-xl mb-2">{project.title}</h3>
-                    <p className="text-muted-foreground text-sm mb-5 leading-relaxed">{project.description}</p>
+          <AnimatePresence mode="wait">
+            <motion.div
+              key={loading ? 'loading' : 'content'}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.4 }}
+            >
+              <StaggerContainer className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 mt-16" staggerDelay={0.1}>
+                {loading ? (
+                  Array.from({ length: 3 }).map((_, i) => <RunningProjectCardSkeleton key={i} />)
+                ) : (
+                  finalRunningProjects.map((project) => (
+                    <StaggerItem key={project.id}>
+                      <motion.div
+                        whileHover={{ y: -8 }}
+                        className="bg-card border border-border rounded-2xl overflow-hidden group"
+                      >
+                        <div className="relative aspect-[16/10] overflow-hidden">
+                          <img
+                            src={project.image}
+                            alt={project.title}
+                            className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                          />
+                          <div className="absolute top-4 left-4">
+                            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-500/90 text-white text-xs font-medium">
+                              <span className="w-1.5 h-1.5 rounded-full bg-white animate-pulse" />
+                              In Progress
+                            </span>
+                          </div>
+                          <div className="absolute top-4 right-4">
+                            <span className="px-3 py-1 rounded-full bg-primary/90 text-primary-foreground text-xs font-medium">
+                              {project.category}
+                            </span>
+                          </div>
+                        </div>
+                        <div className="p-6">
+                          <div className="flex items-center gap-4 text-sm text-muted-foreground mb-3">
+                            <span className="flex items-center gap-1">
+                              <Building2 className="h-4 w-4" />
+                              {project.client}
+                            </span>
+                            <span className="flex items-center gap-1">
+                              <MapPin className="h-4 w-4" />
+                              {project.location}
+                            </span>
+                          </div>
+                          <h3 className="font-display font-semibold text-xl mb-2">{project.title}</h3>
+                          <p className="text-muted-foreground text-sm mb-5 leading-relaxed">{project.description}</p>
 
-                    <div className="mb-5">
-                      <div className="flex items-center justify-between text-sm mb-2">
-                        <span className="text-muted-foreground">Progress</span>
-                        <span className="font-semibold text-primary">{project.progress}%</span>
-                      </div>
-                      <div className="h-2 rounded-full bg-muted overflow-hidden">
-                        <motion.div
-                          className="h-full rounded-full bg-primary"
-                          initial={{ width: 0 }}
-                          whileInView={{ width: `${project.progress}%` }}
-                          viewport={{ once: true }}
-                          transition={{ duration: 1, ease: 'easeOut', delay: 0.2 }}
-                        />
-                      </div>
-                    </div>
+                          <div className="mb-5">
+                            <div className="flex items-center justify-between text-sm mb-2">
+                              <span className="text-muted-foreground">Progress</span>
+                              <span className="font-semibold text-primary">{project.progress}%</span>
+                            </div>
+                            <div className="h-2 rounded-full bg-muted overflow-hidden">
+                              <motion.div
+                                className="h-full rounded-full bg-primary"
+                                initial={{ width: 0 }}
+                                whileInView={{ width: `${project.progress}%` }}
+                                viewport={{ once: true }}
+                                transition={{ duration: 1, ease: 'easeOut', delay: 0.2 }}
+                              />
+                            </div>
+                          </div>
 
-                    <div>
-                      <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-2">Key Highlights</p>
-                      <ul className="space-y-1.5">
-                        {project.highlights.map((highlight) => (
-                          <li key={highlight} className="flex items-start gap-2 text-sm text-muted-foreground">
-                            <CheckCircle2 className="h-4 w-4 text-primary shrink-0 mt-0.5" />
-                            {highlight}
-                          </li>
-                        ))}
-                      </ul>
-                    </div>
-                  </div>
-                </motion.div>
-              </StaggerItem>
-            ))}
-          </StaggerContainer>
+                          <div>
+                            <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-2">Key Highlights</p>
+                            <ul className="space-y-1.5">
+                              {project.highlights.map((highlight) => (
+                                <li key={highlight} className="flex items-start gap-2 text-sm text-muted-foreground">
+                                  <CheckCircle2 className="h-4 w-4 text-primary shrink-0 mt-0.5" />
+                                  {highlight}
+                                </li>
+                              ))}
+                            </ul>
+                          </div>
+                        </div>
+                      </motion.div>
+                    </StaggerItem>
+                  ))
+                )}
+              </StaggerContainer>
+            </motion.div>
+          </AnimatePresence>
         </div>
       </section>
 
@@ -447,33 +530,37 @@ export default function Projects() {
 
           <AnimatePresence mode="wait">
             <motion.div
-              key={galleryFilter}
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -20 }}
+              key={`${galleryFilter}-${loading}`}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
               transition={{ duration: 0.3 }}
               className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4"
             >
-              {galleryItems
-                .filter((item) => galleryFilter === 'All' || item.category === galleryFilter)
-                .map((item, index) => (
-                  <motion.div
-                    key={`${item.caption}-${index}`}
-                    whileHover={{ scale: 1.02 }}
-                    className="relative rounded-xl overflow-hidden group cursor-pointer aspect-[4/3]"
-                  >
-                    <img
-                      src={item.src}
-                      alt={item.caption}
-                      className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-                    <div className="absolute bottom-0 left-0 right-0 p-4 translate-y-2 group-hover:translate-y-0 opacity-0 group-hover:opacity-100 transition-all duration-300">
-                      <span className="text-xs text-white/70 block mb-0.5">{item.category}</span>
-                      <p className="text-white text-sm font-medium">{item.caption}</p>
-                    </div>
-                  </motion.div>
-                ))}
+              {loading ? (
+                Array.from({ length: 6 }).map((_, i) => <GalleryItemSkeleton key={i} />)
+              ) : (
+                finalGalleryItems
+                  .filter((item) => galleryFilter === 'All' || item.category === galleryFilter)
+                  .map((item, index) => (
+                    <motion.div
+                      key={`${item.caption}-${index}`}
+                      whileHover={{ scale: 1.02 }}
+                      className="relative rounded-xl overflow-hidden group cursor-pointer aspect-[4/3]"
+                    >
+                      <img
+                        src={item.src}
+                        alt={item.caption}
+                        className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                      <div className="absolute bottom-0 left-0 right-0 p-4 translate-y-2 group-hover:translate-y-0 opacity-0 group-hover:opacity-100 transition-all duration-300">
+                        <span className="text-xs text-white/70 block mb-0.5">{item.category}</span>
+                        <p className="text-white text-sm font-medium">{item.caption}</p>
+                      </div>
+                    </motion.div>
+                  ))
+              )}
             </motion.div>
           </AnimatePresence>
         </div>

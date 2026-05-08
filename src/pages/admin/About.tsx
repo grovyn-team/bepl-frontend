@@ -30,6 +30,29 @@ interface AboutData {
     message: string;
     image?: string;
   };
+  safetyEvents?: Array<{
+    title: string;
+    date: string;
+    location: string;
+    topics: string[];
+    participation: string;
+    description: string;
+    image: string;
+  }>;
+  staffMeetings?: Array<{
+    icon: string;
+    purpose: string;
+    frequency: string;
+    description: string;
+    keyPoints: string[];
+    participation: string;
+  }>;
+  trainingActivities?: Array<{
+    icon: string;
+    title: string;
+    frequency: string;
+    description: string;
+  }>;
 }
 
 export default function AdminAbout() {
@@ -114,6 +137,42 @@ export default function AdminAbout() {
   const removeCertification = (index: number) => {
     const newCerts = formData.certifications?.filter((_, i) => i !== index);
     setFormData({ ...formData, certifications: newCerts });
+  };
+
+  const addSafetyEvent = () => {
+    setFormData({
+      ...formData,
+      safetyEvents: [...(formData.safetyEvents || []), { title: '', date: '', location: '', topics: [], participation: '', description: '', image: '' }],
+    });
+  };
+
+  const removeSafetyEvent = (index: number) => {
+    const newEvents = formData.safetyEvents?.filter((_, i) => i !== index);
+    setFormData({ ...formData, safetyEvents: newEvents });
+  };
+
+  const addStaffMeeting = () => {
+    setFormData({
+      ...formData,
+      staffMeetings: [...(formData.staffMeetings || []), { icon: '', purpose: '', frequency: '', description: '', keyPoints: [], participation: '' }],
+    });
+  };
+
+  const removeStaffMeeting = (index: number) => {
+    const newMeetings = formData.staffMeetings?.filter((_, i) => i !== index);
+    setFormData({ ...formData, staffMeetings: newMeetings });
+  };
+
+  const addTrainingActivity = () => {
+    setFormData({
+      ...formData,
+      trainingActivities: [...(formData.trainingActivities || []), { icon: '', title: '', frequency: '', description: '' }],
+    });
+  };
+
+  const removeTrainingActivity = (index: number) => {
+    const newActivities = formData.trainingActivities?.filter((_, i) => i !== index);
+    setFormData({ ...formData, trainingActivities: newActivities });
   };
 
   const handleMdImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -509,6 +568,188 @@ export default function AdminAbout() {
                 >
                   <Trash2 className="h-4 w-4" />
                 </Button>
+              </div>
+            ))}
+          </div>
+        </Card>
+
+        {/* Safety Events */}
+        <Card className="p-6">
+          <div className="flex justify-between items-center mb-4">
+            <h3 className="font-semibold text-lg">Safety Events</h3>
+            <Button type="button" variant="outline" size="sm" onClick={addSafetyEvent} className="gap-2">
+              <Plus className="h-4 w-4" />
+              Add Event
+            </Button>
+          </div>
+          <div className="space-y-4">
+            {formData.safetyEvents?.map((event, index) => (
+              <div key={index} className="border rounded-lg p-4 space-y-3">
+                <div className="flex justify-between items-center">
+                  <span className="text-sm font-medium">Event {index + 1}</span>
+                  <Button type="button" variant="ghost" size="sm" onClick={() => removeSafetyEvent(index)}>
+                    <Trash2 className="h-4 w-4" />
+                  </Button>
+                </div>
+                <div className="grid grid-cols-2 gap-3">
+                  <Input placeholder="Title" value={event.title} onChange={(e) => {
+                    const newEvents = [...(formData.safetyEvents || [])];
+                    newEvents[index].title = e.target.value;
+                    setFormData({ ...formData, safetyEvents: newEvents });
+                  }} />
+                  <Input placeholder="Date" value={event.date} onChange={(e) => {
+                    const newEvents = [...(formData.safetyEvents || [])];
+                    newEvents[index].date = e.target.value;
+                    setFormData({ ...formData, safetyEvents: newEvents });
+                  }} />
+                  <Input placeholder="Location" value={event.location} onChange={(e) => {
+                    const newEvents = [...(formData.safetyEvents || [])];
+                    newEvents[index].location = e.target.value;
+                    setFormData({ ...formData, safetyEvents: newEvents });
+                  }} />
+                  <Input placeholder="Participation (e.g. 300+ workers)" value={event.participation} onChange={(e) => {
+                    const newEvents = [...(formData.safetyEvents || [])];
+                    newEvents[index].participation = e.target.value;
+                    setFormData({ ...formData, safetyEvents: newEvents });
+                  }} />
+                  <div className="flex gap-2">
+                    <Input placeholder="Image URL" value={event.image} onChange={(e) => {
+                      const newEvents = [...(formData.safetyEvents || [])];
+                      newEvents[index].image = e.target.value;
+                      setFormData({ ...formData, safetyEvents: newEvents });
+                    }} />
+                    <label className="cursor-pointer shrink-0">
+                      <input type="file" className="hidden" accept="image/*" onChange={async (e) => {
+                        const file = e.target.files?.[0];
+                        if (!file) return;
+                        try {
+                          toast({ title: 'Uploading...', description: 'Please wait.' });
+                          const res = await uploadAPI.image(file, 'about');
+                          const newEvents = [...(formData.safetyEvents || [])];
+                          newEvents[index].image = res.data.url;
+                          setFormData({ ...formData, safetyEvents: newEvents });
+                          toast({ title: 'Success', description: 'Image uploaded successfully' });
+                        } catch (err: any) {
+                          toast({ title: 'Error', description: err.message || 'Upload failed', variant: 'destructive' });
+                        }
+                      }} />
+                      <span className="inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors bg-primary text-primary-foreground hover:bg-primary/90 h-10 px-4 py-2 gap-2 whitespace-nowrap shadow">
+                        <Upload className="h-4 w-4" />
+                        Upload
+                      </span>
+                    </label>
+                  </div>
+                  <Input placeholder="Topics (comma separated)" value={event.topics?.join(', ')} onChange={(e) => {
+                    const newEvents = [...(formData.safetyEvents || [])];
+                    newEvents[index].topics = e.target.value.split(',').map(s => s.trim()).filter(Boolean);
+                    setFormData({ ...formData, safetyEvents: newEvents });
+                  }} />
+                </div>
+                <Textarea placeholder="Description" value={event.description} onChange={(e) => {
+                  const newEvents = [...(formData.safetyEvents || [])];
+                  newEvents[index].description = e.target.value;
+                  setFormData({ ...formData, safetyEvents: newEvents });
+                }} rows={2} />
+              </div>
+            ))}
+          </div>
+        </Card>
+
+        {/* Staff Meetings */}
+        <Card className="p-6">
+          <div className="flex justify-between items-center mb-4">
+            <h3 className="font-semibold text-lg">Staff Meetings</h3>
+            <Button type="button" variant="outline" size="sm" onClick={addStaffMeeting} className="gap-2">
+              <Plus className="h-4 w-4" />
+              Add Meeting
+            </Button>
+          </div>
+          <div className="space-y-4">
+            {formData.staffMeetings?.map((meeting, index) => (
+              <div key={index} className="border rounded-lg p-4 space-y-3">
+                <div className="flex justify-between items-center">
+                  <span className="text-sm font-medium">Meeting {index + 1}</span>
+                  <Button type="button" variant="ghost" size="sm" onClick={() => removeStaffMeeting(index)}>
+                    <Trash2 className="h-4 w-4" />
+                  </Button>
+                </div>
+                <div className="grid grid-cols-2 gap-3">
+                  <Input placeholder="Purpose" value={meeting.purpose} onChange={(e) => {
+                    const newMeetings = [...(formData.staffMeetings || [])];
+                    newMeetings[index].purpose = e.target.value;
+                    setFormData({ ...formData, staffMeetings: newMeetings });
+                  }} />
+                  <Input placeholder="Frequency (e.g. Weekly)" value={meeting.frequency} onChange={(e) => {
+                    const newMeetings = [...(formData.staffMeetings || [])];
+                    newMeetings[index].frequency = e.target.value;
+                    setFormData({ ...formData, staffMeetings: newMeetings });
+                  }} />
+                  <Input placeholder="Icon Name (e.g. Target)" value={meeting.icon} onChange={(e) => {
+                    const newMeetings = [...(formData.staffMeetings || [])];
+                    newMeetings[index].icon = e.target.value;
+                    setFormData({ ...formData, staffMeetings: newMeetings });
+                  }} />
+                  <Input placeholder="Participation" value={meeting.participation} onChange={(e) => {
+                    const newMeetings = [...(formData.staffMeetings || [])];
+                    newMeetings[index].participation = e.target.value;
+                    setFormData({ ...formData, staffMeetings: newMeetings });
+                  }} />
+                </div>
+                <Input placeholder="Key Points (comma separated)" value={meeting.keyPoints?.join(', ')} onChange={(e) => {
+                  const newMeetings = [...(formData.staffMeetings || [])];
+                  newMeetings[index].keyPoints = e.target.value.split(',').map(s => s.trim()).filter(Boolean);
+                  setFormData({ ...formData, staffMeetings: newMeetings });
+                }} />
+                <Textarea placeholder="Description" value={meeting.description} onChange={(e) => {
+                  const newMeetings = [...(formData.staffMeetings || [])];
+                  newMeetings[index].description = e.target.value;
+                  setFormData({ ...formData, staffMeetings: newMeetings });
+                }} rows={2} />
+              </div>
+            ))}
+          </div>
+        </Card>
+
+        {/* Training Activities */}
+        <Card className="p-6">
+          <div className="flex justify-between items-center mb-4">
+            <h3 className="font-semibold text-lg">Training Activities</h3>
+            <Button type="button" variant="outline" size="sm" onClick={addTrainingActivity} className="gap-2">
+              <Plus className="h-4 w-4" />
+              Add Activity
+            </Button>
+          </div>
+          <div className="space-y-4">
+            {formData.trainingActivities?.map((activity, index) => (
+              <div key={index} className="border rounded-lg p-4 space-y-3">
+                <div className="flex justify-between items-center">
+                  <span className="text-sm font-medium">Activity {index + 1}</span>
+                  <Button type="button" variant="ghost" size="sm" onClick={() => removeTrainingActivity(index)}>
+                    <Trash2 className="h-4 w-4" />
+                  </Button>
+                </div>
+                <div className="grid grid-cols-3 gap-3">
+                  <Input placeholder="Title" value={activity.title} onChange={(e) => {
+                    const newActivities = [...(formData.trainingActivities || [])];
+                    newActivities[index].title = e.target.value;
+                    setFormData({ ...formData, trainingActivities: newActivities });
+                  }} />
+                  <Input placeholder="Frequency" value={activity.frequency} onChange={(e) => {
+                    const newActivities = [...(formData.trainingActivities || [])];
+                    newActivities[index].frequency = e.target.value;
+                    setFormData({ ...formData, trainingActivities: newActivities });
+                  }} />
+                  <Input placeholder="Icon Name" value={activity.icon} onChange={(e) => {
+                    const newActivities = [...(formData.trainingActivities || [])];
+                    newActivities[index].icon = e.target.value;
+                    setFormData({ ...formData, trainingActivities: newActivities });
+                  }} />
+                </div>
+                <Textarea placeholder="Description" value={activity.description} onChange={(e) => {
+                  const newActivities = [...(formData.trainingActivities || [])];
+                  newActivities[index].description = e.target.value;
+                  setFormData({ ...formData, trainingActivities: newActivities });
+                }} rows={2} />
               </div>
             ))}
           </div>

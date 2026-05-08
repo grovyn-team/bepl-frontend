@@ -5,6 +5,7 @@ import { ArrowRight, Shield, Clock, Award, Users, Building2, Wrench, HardHat, Ch
 import { Button } from '@/components/ui/button';
 import { Layout } from '@/components/layout/Layout';
 import { SectionHeading } from '@/components/ui/section-heading';
+import { Skeleton } from '@/components/ui/skeleton';
 import { AnimatedCounter } from '@/components/ui/animated-counter';
 import { ScrollReveal, StaggerContainer, StaggerItem, ParallaxSection } from '@/components/animations/ScrollAnimations';
 import { serviceAPI, projectAPI, aboutAPI } from '@/lib/api';
@@ -24,6 +25,26 @@ const iconMap: Record<string, any> = {
   Clock,
   Users,
 };
+
+// Skeleton components
+const ServiceCardSkeleton = () => (
+  <div className="bg-card rounded-2xl p-8 border border-border shadow-lg">
+    <Skeleton className="w-14 h-14 rounded-xl mb-6" />
+    <Skeleton className="h-7 w-3/4 mb-3" />
+    <Skeleton className="h-4 w-full mb-2" />
+    <Skeleton className="h-4 w-5/6" />
+  </div>
+);
+
+const ProjectPreviewSkeleton = () => (
+  <div className="relative rounded-2xl overflow-hidden aspect-[16/10]">
+    <Skeleton className="w-full h-full" />
+    <div className="absolute bottom-0 left-0 right-0 p-8">
+      <Skeleton className="h-8 w-2/3 mb-2" />
+      <Skeleton className="h-4 w-1/2" />
+    </div>
+  </div>
+);
 
 const whyChooseUs = [
   { icon: Shield, title: 'Data Credible', description: 'Transparent and verified project records' },
@@ -73,6 +94,7 @@ export default function Index() {
   const heroScale = useTransform(scrollYProgress, [0, 0.3], [1, 1.1]);
 
   const [services, setServices] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
   const [stats, setStats] = useState([
     { value: 44, suffix: '+', label: 'Years Experience' },
     { value: 300, suffix: '+', label: 'Projects Completed' },
@@ -89,6 +111,7 @@ export default function Index() {
 
   const fetchData = async () => {
     try {
+      setLoading(true);
       // Fetch services (limit to 3 for homepage)
       const servicesResponse = await serviceAPI.getAll();
       const servicesData = servicesResponse.data || [];
@@ -103,7 +126,6 @@ export default function Index() {
       const aboutResponse = await aboutAPI.get();
       const aboutData = aboutResponse.data;
       if (aboutData?.teamStats) {
-        const projectCount = projectsData.length;
         setStats([
           { value: aboutData.teamStats.yearsExperience || 44, suffix: '+', label: 'Years Experience' },
           { value: 300, suffix: '+', label: 'Projects Completed' },
@@ -117,6 +139,8 @@ export default function Index() {
       }
     } catch (error) {
       console.error('Failed to fetch data:', error);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -302,25 +326,38 @@ export default function Index() {
             description="From structural steel erection to complete plant maintenance, we deliver end-to-end engineering services."
           />
 
-          <div className="grid md:grid-cols-3 gap-8 mt-16">
-            {services.map((service, index) => {
-              const IconComponent = service.icon && iconMap[service.icon] ? iconMap[service.icon] : Building2;
-              return (
-                <ScrollReveal key={service.id || service._id || index} delay={index * 0.1}>
-                  <motion.div
-                    whileHover={{ y: -8 }}
-                    className="bg-card rounded-2xl p-8 border border-border shadow-lg hover:shadow-xl transition-all group"
-                  >
-                    <div className="w-14 h-14 rounded-xl bg-primary/10 flex items-center justify-center mb-6 group-hover:bg-primary group-hover:text-primary-foreground transition-colors">
-                      <IconComponent className="h-7 w-7 text-primary group-hover:text-primary-foreground transition-colors" />
-                    </div>
-                    <h3 className="font-display text-xl font-semibold mb-3">{service.title}</h3>
-                    <p className="text-muted-foreground leading-relaxed">{service.description}</p>
-                  </motion.div>
-                </ScrollReveal>
-              );
-            })}
-          </div>
+          <AnimatePresence mode="wait">
+            <motion.div
+              key={loading ? 'loading' : 'content'}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.4 }}
+              className="grid md:grid-cols-3 gap-8 mt-16"
+            >
+              {loading ? (
+                Array.from({ length: 3 }).map((_, i) => <ServiceCardSkeleton key={i} />)
+              ) : (
+                services.map((service, index) => {
+                  const IconComponent = service.icon && iconMap[service.icon] ? iconMap[service.icon] : Building2;
+                  return (
+                    <ScrollReveal key={service.id || service._id || index} delay={index * 0.1}>
+                      <motion.div
+                        whileHover={{ y: -8 }}
+                        className="bg-card rounded-2xl p-8 border border-border shadow-lg hover:shadow-xl transition-all group"
+                      >
+                        <div className="w-14 h-14 rounded-xl bg-primary/10 flex items-center justify-center mb-6 group-hover:bg-primary group-hover:text-primary-foreground transition-colors">
+                          <IconComponent className="h-7 w-7 text-primary group-hover:text-primary-foreground transition-colors" />
+                        </div>
+                        <h3 className="font-display text-xl font-semibold mb-3">{service.title}</h3>
+                        <p className="text-muted-foreground leading-relaxed">{service.description}</p>
+                      </motion.div>
+                    </ScrollReveal>
+                  );
+                })
+              )}
+            </motion.div>
+          </AnimatePresence>
 
           <div className="text-center mt-12">
             <Link to="/services">
@@ -367,71 +404,83 @@ export default function Index() {
             description="From power plants to steel mills, we've successfully completed major projects for leading industrial clients."
           />
 
-          <div className="grid md:grid-cols-2 gap-8 mt-16">
-            {projects.map((project, index) => (
-              <ParallaxSection key={project._id || project.id || index} offset={index % 2 === 0 ? 30 : -30}>
-                <motion.div
-                  whileHover={{ scale: 1.02 }}
-                  className="relative rounded-2xl overflow-hidden group cursor-pointer"
-                >
-                  {project.image ? (
-                    <img
-                      src={project.image}
-                      alt={project.title}
-                      className="w-full aspect-[16/10] object-cover transition-transform duration-500 group-hover:scale-110"
-                    />
-                  ) : (
-                    <div className="w-full aspect-[16/10] bg-muted flex items-center justify-center">
-                      <Building2 className="h-16 w-16 text-muted-foreground" />
-                    </div>
-                  )}
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent" />
-                  <div className="absolute bottom-0 left-0 right-0 p-8">
-                    <h3 className="font-display text-2xl font-bold text-white mb-2">{project.title}</h3>
-                    <p className="text-white/90">{project.client} • {project.location}</p>
-                  </div>
-                </motion.div>
-              </ParallaxSection>
-            ))}
-            {projects.length === 0 && (
-              <>
-                <ParallaxSection offset={30}>
-                  <motion.div
-                    whileHover={{ scale: 1.02 }}
-                    className="relative rounded-2xl overflow-hidden group cursor-pointer"
-                  >
-                    <img
-                      src={projectsSteel}
-                      alt="Steel structure project"
-                      className="w-full aspect-[16/10] object-cover transition-transform duration-500 group-hover:scale-110"
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent" />
-                    <div className="absolute bottom-0 left-0 right-0 p-8">
-                      <h3 className="font-display text-2xl font-bold text-white mb-2">Steel Mill Projects</h3>
-                      <p className="text-white/90">JSW, AMNS, ESSAR Steel</p>
-                    </div>
-                  </motion.div>
-                </ParallaxSection>
-                <ParallaxSection offset={-30}>
-                  <motion.div
-                    whileHover={{ scale: 1.02 }}
-                    className="relative rounded-2xl overflow-hidden group cursor-pointer"
-                  >
-                    <img
-                      src={projectsPower}
-                      alt="Power plant project"
-                      className="w-full aspect-[16/10] object-cover transition-transform duration-500 group-hover:scale-110"
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent" />
-                    <div className="absolute bottom-0 left-0 right-0 p-8">
-                      <h3 className="font-display text-2xl font-bold text-white mb-2">Power Plant Projects</h3>
-                      <p className="text-white/90">NTPC, ESSAR Power, BHEL</p>
-                    </div>
-                  </motion.div>
-                </ParallaxSection>
-              </>
-            )}
-          </div>
+          <AnimatePresence mode="wait">
+            <motion.div
+              key={loading ? 'loading' : 'content'}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.4 }}
+              className="grid md:grid-cols-2 gap-8 mt-16"
+            >
+              {loading ? (
+                Array.from({ length: 2 }).map((_, i) => <ProjectPreviewSkeleton key={i} />)
+              ) : projects.length > 0 ? (
+                projects.map((project, index) => (
+                  <ParallaxSection key={project._id || project.id || index} offset={index % 2 === 0 ? 30 : -30}>
+                    <motion.div
+                      whileHover={{ scale: 1.02 }}
+                      className="relative rounded-2xl overflow-hidden group cursor-pointer"
+                    >
+                      {project.image ? (
+                        <img
+                          src={project.image}
+                          alt={project.title}
+                          className="w-full aspect-[16/10] object-cover transition-transform duration-500 group-hover:scale-110"
+                        />
+                      ) : (
+                        <div className="w-full aspect-[16/10] bg-muted flex items-center justify-center">
+                          <Building2 className="h-16 w-16 text-muted-foreground" />
+                        </div>
+                      )}
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent" />
+                      <div className="absolute bottom-0 left-0 right-0 p-8">
+                        <h3 className="font-display text-2xl font-bold text-white mb-2">{project.title}</h3>
+                        <p className="text-white/90">{project.client} • {project.location}</p>
+                      </div>
+                    </motion.div>
+                  </ParallaxSection>
+                ))
+              ) : (
+                <>
+                  <ParallaxSection offset={30}>
+                    <motion.div
+                      whileHover={{ scale: 1.02 }}
+                      className="relative rounded-2xl overflow-hidden group cursor-pointer"
+                    >
+                      <img
+                        src={projectsSteel}
+                        alt="Steel structure project"
+                        className="w-full aspect-[16/10] object-cover transition-transform duration-500 group-hover:scale-110"
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent" />
+                      <div className="absolute bottom-0 left-0 right-0 p-8">
+                        <h3 className="font-display text-2xl font-bold text-white mb-2">Steel Mill Projects</h3>
+                        <p className="text-white/90">JSW, AMNS, ESSAR Steel</p>
+                      </div>
+                    </motion.div>
+                  </ParallaxSection>
+                  <ParallaxSection offset={-30}>
+                    <motion.div
+                      whileHover={{ scale: 1.02 }}
+                      className="relative rounded-2xl overflow-hidden group cursor-pointer"
+                    >
+                      <img
+                        src={projectsPower}
+                        alt="Power plant project"
+                        className="w-full aspect-[16/10] object-cover transition-transform duration-500 group-hover:scale-110"
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent" />
+                      <div className="absolute bottom-0 left-0 right-0 p-8">
+                        <h3 className="font-display text-2xl font-bold text-white mb-2">Power Plant Projects</h3>
+                        <p className="text-white/90">NTPC, ESSAR Power, BHEL</p>
+                      </div>
+                    </motion.div>
+                  </ParallaxSection>
+                </>
+              )}
+            </motion.div>
+          </AnimatePresence>
 
           <div className="text-center mt-12">
             <Link to="/projects">
